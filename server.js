@@ -1,13 +1,16 @@
 'use strict';
 
-console.log("PHOTO SHARE server... STARTED")
+console.log("PhotoBomb server... STARTED")
 
 //==============Modules
 
 var express = require('express'),
     app = express();
 
-app.use(express.bodyParser());
+app.configure(function(){
+  app.use(express.json());
+  app.use(express.urlencoded());
+});
 
 var mongoose = require('mongoose');
 
@@ -15,12 +18,24 @@ var request = require('request');
 
 var u_ = require('underscore');
 
+var Validator = require('validator').Validator
+var sanitize = require('validator').sanitize;
+
 //==============Functions
 
 var exec = require('child_process').exec;
 function execute(command, callback){
     exec(command, function(error, stdout, stderr){ callback(stdout); });
 };
+
+Validator.prototype.error = function (msg) {
+  this._errors.push(msg);
+  return this;
+}
+
+Validator.prototype.getErrors = function () {
+  return;
+}
 
 //==============Database
 mongoose.connect('mongodb://localhost/photo_share_dev');
@@ -41,9 +56,26 @@ var mongoose = require('mongoose');
 var linkPairSchema = mongoose.Schema({
   createdAt: Date,
   updatedAt: Date,
-  title: String,
-  webLinks: [{userName: String, webURL: String}]
+  swapId: String,
+  webLinks: [{userDescription: String, webURL: String}]
 });
  
-var linkPair = mongoose.model('linkPair', projectSchema);
+var linkPair = mongoose.model('linkPair', linkPairSchema);
 
+// Web server
+app.use('/p', express.static(__dirname + '/public'));
+
+app.get("/", function(req, res){
+  res.sendfile("public/index.html");
+});
+
+app.post("/swap.json", function(req, res){
+  res.setHeader('Content-Type', 'text/json');
+  var postObj = JSON.parse(req.body.swap);
+  var validator = new Validator();
+
+  //Basic Validations
+  
+});
+
+app.listen(3000);
