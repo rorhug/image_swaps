@@ -1,17 +1,41 @@
 <!DOCTYPE>
-<html>
+<html ng-app="photobomb">
 <head>
   <title>PhotoBomb</title>
-  <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="lib/pure.css">
+  <link rel="stylesheet" href="lib/custom.css">
+
+  <script type="text/javascript" src="lib/angular.min.js"></script>
+  <script type="text/javascript" src="lib/angular-route.min.js"></script>
+  <script type="text/javascript" src="photo_bomb.js"></script>
 </head>
 <body>
 
   <div class="pure-g-r">
     <div class="pure-u-1-6"></div>
     <div class="pure-u-2-3">
+    	<div class="pure-menu pure-menu-open pure-menu-horizontal">
+		    <a href="#" class="pure-menu-heading">PhotoBomb</a>
+
+		    <ul>
+	        <li class="pure-menu-selected"><a href="#">Home</a></li>
+	        <li><a href="#">Flickr</a></li>
+	        <li><a href="#">Messenger</a></li>
+	        <li><a href="#">Sports</a></li>
+	        <li><a href="#">Finance</a></li>
+		    </ul>
+			</div>
       <h1>PhotoBomb</h1>
+      <ng-view></ng-view>
+      <footer>
+      	Made by <a href="https://twitter.com/RoryDHughes">Rory Hughes</a>
+      </footer>
     </div>
     <div class="pure-u-1-6"></div>
   </div>
+
+
 </body>
 </html>

@@ -2,6 +2,8 @@
 
 console.log("PhotoBomb server... STARTED")
 
+
+
 //==============Modules
 
 var express = require('express'),
@@ -19,6 +21,24 @@ var Validator = require('validator').Validator
 var sanitize = require('validator').sanitize;
 
 var extend = require('util')._extend;
+
+var toobusy = require('toobusy');
+ 
+// middleware which blocks requests when too busy
+app.use(function(req, res, next) {
+  if (toobusy()) {
+    res.send(503, "I'm busy right now, sorry.");
+  } else {
+    next();
+  } 
+});
+
+process.on('SIGINT', function() {
+  server.close();
+  // calling .shutdown allows the process to exit normally
+  toobusy.shutdown();
+  process.exit();
+});
 
 //==============Functions
 
@@ -65,8 +85,6 @@ var linkPairSchema = mongoose.Schema({
 var LinkPair = mongoose.model('LinkPair', linkPairSchema);
 
 //==============Web server
-app.use('/p', express.static(__dirname + '/public'));
-
 app.get("/", function(req, res){
   res.sendfile("public/index.html");
 });
@@ -191,5 +209,8 @@ app.post("/poll.json", function(req, res){
   }
 
 });
+
+//Static files
+app.use('/', express.static(__dirname + '/public'));
 
 app.listen(3000);
