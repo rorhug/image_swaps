@@ -18,6 +18,8 @@ var u_ = require('underscore');
 var Validator = require('validator').Validator
 var sanitize = require('validator').sanitize;
 
+var extend = require('util')._extend;
+
 //==============Functions
 
 var exec = require('child_process').exec;
@@ -57,7 +59,7 @@ var mongoose = require('mongoose');
  
 var linkPairSchema = mongoose.Schema({
   createdAt: Date,
-  webLinks: [{userDescription: String, webURL: String, ipAddress: String}]
+  webLinks: [{userDescription: String, webURL: String, ipAddress: String, original: Boolean}]
 });
  
 var LinkPair = mongoose.model('LinkPair', linkPairSchema);
@@ -110,7 +112,8 @@ app.post("/swap.json", function(req, res){
         obj.webLinks.push({
           userDescription: postObj.desc,
           webURL: postObj.url,
-          ipAddress: ip
+          ipAddress: ip,
+          original: false
         });
         obj.save(function (err, product, numberAffected) {
           if (err) {
@@ -118,14 +121,15 @@ app.post("/swap.json", function(req, res){
             return handleError(err);
           }
 
-          res.end(JSON.stringify(obj));
+          res.end(JSON.stringify(extend({pollStatus: 2}, obj)._doc));
         });
       }else{
         console.log("new");
         var newPair = new LinkPair({webLinks:[{
                                                userDescription: postObj.desc,
                                                webURL: postObj.url,
-                                               ipAddress: ip
+                                               ipAddress: ip,
+                                               original: true
                                              }],
                                     createdAt: timestamp
                                   });
@@ -135,7 +139,7 @@ app.post("/swap.json", function(req, res){
             return handleError(err);
           }
 
-          res.end(JSON.stringify(newPairSaved));
+          res.end(JSON.stringify(extend({pollStatus: 1}, newPairSaved._doc)));
         });
       }
     });
@@ -161,7 +165,30 @@ app.post("/poll.json", function(req, res){
 
   var v = new Validator();
   // Check if it is a 24 character mongo object id
-  v.check(postObj.desc, "Description must be between 1 and 250 characters").len(1, 250);
+  v.check(suppliedPairId, "Invalid swap pair id").len(24, 24);
+
+  if(v._errors.length == 0)
+  {
+    //TODO: ONLY LOOK FOR ONES WITH ONE WEBLINK
+    LinkPair.findById(suppliedPairId, function(err, obj){
+      if (err)
+      {
+        res.end(er(["Database query error"]));
+        return handleError(err);
+      }
+      if (obj)
+      {
+        var polStat = obj.webLinks.length == 1 ? 1 : 2;
+        res.end(JSON.stringify(extend({pollStatus: polStat}, obj._doc)));
+      }else{
+        var errorObj = {pollStatus: 0, errors: ["Unable to find swap pair"]};
+        res.end(JSON.stringify(errorObj));
+      }
+    });
+  }else{
+    // Send validation errors
+    res.end(ers(v._errors));
+  }
 
 });
 

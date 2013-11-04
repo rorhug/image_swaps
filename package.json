@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Share photos...",
   "keywords": [],
-  "repository": "repo",
+  "repository": "git@github.com:RoryDH/photo_bomb.git",
   "dependencies": {
     "mongoose": "3.6.x",
     "underscore": "1.5.2",
