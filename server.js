@@ -1,7 +1,6 @@
 'use strict';
 
-console.log("PhotoBomb server... STARTED")
-
+console.log("ImageSwaps server... STARTED")
 
 
 //==============Modules
@@ -62,7 +61,7 @@ function ers(error_list)
 }
 
 //==============Database
-mongoose.connect('mongodb://localhost/photo_share_dev');
+mongoose.connect('mongodb://localhost/image_swaps');
 
 var db = mongoose.connection;
 
@@ -187,7 +186,6 @@ app.post("/poll.json", function(req, res){
 
   if(v._errors.length == 0)
   {
-    //TODO: ONLY LOOK FOR ONES WITH ONE WEBLINK
     LinkPair.findById(suppliedPairId, function(err, obj){
       if (err)
       {

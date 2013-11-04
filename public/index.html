@@ -1,7 +1,7 @@
 <!DOCTYPE>
-<html ng-app="photobomb">
+<html ng-app="imageswaps">
 <head>
-  <title>PhotoBomb</title>
+  <title>ImageSwaps</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="stylesheet" href="lib/pure.css">
@@ -9,7 +9,7 @@
 
   <script type="text/javascript" src="lib/angular.min.js"></script>
   <script type="text/javascript" src="lib/angular-route.min.js"></script>
-  <script type="text/javascript" src="photo_bomb.js"></script>
+  <script type="text/javascript" src="lib/image_swaps_script.js"></script>
 </head>
 <body>
 
@@ -17,18 +17,28 @@
     <div class="pure-u-1-6"></div>
     <div class="pure-u-2-3">
     	<div class="pure-menu pure-menu-open pure-menu-horizontal">
-		    <a href="#" class="pure-menu-heading">PhotoBomb</a>
+		    <a href="/" class="pure-menu-heading">ImageSwaps</a>
 
 		    <ul>
-	        <li class="pure-menu-selected"><a href="#">Home</a></li>
-	        <li><a href="#">Flickr</a></li>
-	        <li><a href="#">Messenger</a></li>
-	        <li><a href="#">Sports</a></li>
-	        <li><a href="#">Finance</a></li>
+	        <li active-tab="pure-menu-selected"><a href="/">SWAP</a></li>
+	        <li active-tab="pure-menu-selected"><a href="/help">Help</a></li>
+	        <li active-tab="pure-menu-selected"><a href="/about">About</a></li>
 		    </ul>
 			</div>
-      <h1>PhotoBomb</h1>
       <ng-view></ng-view>
+
+      <script type="text/javascript"><!--
+			google_ad_client = "ca-pub-0609957429635862";
+			/* imageswapper_bottom */
+			google_ad_slot = "6378550077";
+			google_ad_width = 468;
+			google_ad_height = 60;
+			//-->
+			</script>
+			<script type="text/javascript"
+			src="//pagead2.googlesyndication.com/pagead/show_ads.js">
+			</script>
+
       <footer>
       	Made by <a href="https://twitter.com/RoryDHughes">Rory Hughes</a>
       </footer>

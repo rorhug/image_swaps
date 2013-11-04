@@ -1,4 +1,4 @@
-PhotoBomb
-=========
+ImageSwaps
+==========
 
 Swap image links...

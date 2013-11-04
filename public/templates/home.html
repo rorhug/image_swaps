@@ -1,0 +1,15 @@
+<h3>Swap an image with someone...</h3>
+
+<form novalidate class="pure-form pure-form-aligned new-swap-form" ng-submit="test()">
+  <fieldset>
+		<div class="pure-control-group">
+	    <label for="url">Link to an image</label>
+	    <input id="url" type="text" class="pure-input-2-3" placeholder="http://i.imgur.com/DuBec8q.gif" ng-model="newSwapObject.url">
+		</div>
+		<div class="pure-control-group">
+	    <label for="desc">Description or message</label>
+	    <input id="desc" type="text" class="pure-input-2-3" placeholder="Funny cat GIF..." ng-model="newSwapObject.desc">
+		</div>
+  </fieldset>
+  <button type="submit" class="pure-button pure-input-1 pure-button-success">Swap your image!</button>
+</form>

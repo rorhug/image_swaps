@@ -1,9 +1,9 @@
 {
-  "name": "photo_bomb",
+  "name": "image_swaps",
   "version": "0.0.1",
   "description": "Share photos...",
   "keywords": [],
-  "repository": "git@github.com:RoryDH/photo_bomb.git",
+  "repository": "git@github.com:RoryDH/image_swaps.git",
   "dependencies": {
     "mongoose": "3.6.x",
     "underscore": "1.5.2",
