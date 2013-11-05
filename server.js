@@ -39,7 +39,7 @@ process.on('SIGINT', function() {
   process.exit();
 });
 
-//==============Functions
+//==============Functions/Vars
 
 var exec = require('child_process').exec;
 function execute(command, callback){
@@ -79,8 +79,23 @@ function sha1(x){
   return shasum.digest('hex');
 }
 
-//==============Database
 var salt = process.env.SWAP_ID_SALT || "omgg2gktnxbai";
+
+console.log("Salt is:" + salt);
+
+var imageMimeTypes = ["image/gif",
+                      "image/jpeg",
+                      "image/pjpeg",
+                      "image/png",
+                      "image/svg+xml",
+                      "image/svg",
+                      "image/tiff",
+                      "image/webp",
+                      "image/x-icon"
+                      "image/ico",
+                      "image/bmp"]
+
+//==============Database
 
 mongoose.connect(process.env.MONGOHQ_URL || 'mongodb://localhost/image_swaps');
 
