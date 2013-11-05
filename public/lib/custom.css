@@ -65,10 +65,14 @@ footer a:visited
 {
   border: solid 1px #e0e0e0;
 }
-
 ins.adsbygoogle
 {
   margin: 0 auto;
   margin-top: 10px;
   display: block !important;
+}
+.small-faded
+{
+  color: #595959;
+  font-size: 13px;
 }

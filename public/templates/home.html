@@ -9,6 +9,10 @@
 	    <input id="url" type="url" class="pure-input-2-3" placeholder="http://i.imgur.com/DuBec8q.gif" ng-model="newSwapObject.url" ng-required>
 		</div>
 		<div class="pure-control-group">
+	    <label></label>
+	    <span class="small-faded">You can find loads on <a href="http://imgur.com/r/funny">imgur</a></span>
+		</div>
+		<div class="pure-control-group">
 	    <label for="desc">Description or message</label>
 	    <textarea id="desc" type="text" class="pure-input-2-3" maxlength="250" placeholder="Funny cat GIF..." ng-model="newSwapObject.desc" ng-maxlength="250" ng-minlength="1" ng-required="true">
 	    </textarea>
@@ -45,5 +49,6 @@
   	<h4>Your Image...</h4>
   	<div class="image-desc" ng-bind="newSwapObject.desc || 'type a description in the box above...'"></div>
   	<a href="{{newSwapObject.url}}" target="_blank"><img class="image-itself" ng-src="{{newSwapObject.url}}"></a>
+  	<p class="small-faded">(If you don't see your picture above, you need to make sure the url actually points to an image and not a web page. <a href="/#/help">Wait what?</a>)</p>
   </div>
 </div>
