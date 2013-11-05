@@ -81,7 +81,7 @@ function sha1(x){
 
 var salt = process.env.SWAP_ID_SALT || "omgg2gktnxbai";
 
-console.log("Salt is:" + salt);
+console.log("Salt is: " + salt);
 
 var imageMimeTypes = ["image/gif",
                       "image/jpeg",
@@ -91,7 +91,7 @@ var imageMimeTypes = ["image/gif",
                       "image/svg",
                       "image/tiff",
                       "image/webp",
-                      "image/x-icon"
+                      "image/x-icon",
                       "image/ico",
                       "image/bmp"]
 
