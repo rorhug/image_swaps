@@ -39,8 +39,8 @@
   	</div>
   	<div ng-show="swapStatus == 2">
 	  	<h4>Their image...</h4>
-	  	<div class="image-desc" ng-bind="incomingSwapObject.userDescription"></div>
-	  	<a href="{{incomingSwapObject.webURL}}" target="_blank"><img class="image-itself" ng-src="{{incomingSwapObject.webURL}}"></a>
+	  	<div class="image-desc" ng-bind="incomingSwapObject.desc"></div>
+	  	<a href="{{incomingSwapObject.url}}" target="_blank"><img class="image-itself" ng-src="{{incomingSwapObject.url}}"></a>
   	</div>
   </div>
   <div class="pure-u-1-2" ng-show="newSwapObject.url && newSwapForm.$valid">

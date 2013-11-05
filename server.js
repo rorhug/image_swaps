@@ -15,12 +15,10 @@ var mongoose = require('mongoose');
 
 // var request = require('request');
 
-// var u_ = require('underscore');
+var _ = require('underscore');
 
 var Validator = require('validator').Validator
 var sanitize = require('validator').sanitize;
-
-var extend = require('util')._extend;
 
 var toobusy = require('toobusy');
  
@@ -61,6 +59,19 @@ function ers(error_list)
   return JSON.stringify({errors: error_list})
 }
 
+function swapResString(o, status)
+{
+  var links = _.map(o.webLinks, function(liO){return {desc:     liO.userDescription,
+                                                  url:      liO.webURL,
+                                                  original: liO.original}
+                                         });
+  return JSON.stringify({
+    swapID: o._id,
+    pollStatus: status,
+    links: links 
+  })
+}
+
 //==============Database
 mongoose.connect(process.env.MONGOHQ_URL || 'mongodb://localhost/image_swaps');
 
@@ -79,6 +90,7 @@ var mongoose = require('mongoose');
  
 var linkPairSchema = mongoose.Schema({
   createdAt: Date,
+  swapID: String,
   webLinks: [{userDescription: String, webURL: String, ipAddress: String, original: Boolean}]
 });
  
@@ -137,7 +149,7 @@ app.post("/swap.json", function(req, res){
             return handleError(err);
           }
 
-          res.end(JSON.stringify(extend({pollStatus: 2}, obj._doc)));
+          res.end(swapResString(obj._doc, 2));
         });
       }else{
         var newPair = new LinkPair({webLinks:[{
@@ -154,7 +166,7 @@ app.post("/swap.json", function(req, res){
             return handleError(err);
           }
 
-          res.end(JSON.stringify(extend({pollStatus: 1}, newPairSaved._doc)));
+          res.end(swapResString(newPairSaved._doc, 1));
         });
       }
     });
@@ -189,7 +201,7 @@ app.post("/poll.json", function(req, res){
       if (obj)
       {
         var polStat = obj.webLinks.length == 1 ? 1 : 2;
-        res.end(JSON.stringify(extend({pollStatus: polStat}, obj._doc)));
+        res.end(swapResString(obj._doc, polStat));
       }else{
         var errorObj = {pollStatus: 0, errors: ["Unable to find swap pair"]};
         res.end(JSON.stringify(errorObj));

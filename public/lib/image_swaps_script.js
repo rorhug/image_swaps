@@ -73,23 +73,22 @@ app.controller('HomeController', function($scope, $http, $timeout){
       else{
         if(r.pollStatus == 2){
           $scope.swapStatus = 2;
-          $scope.incomingSwapObject = r.webLinks.select(function(wl){return wl.original})[0];
+          $scope.incomingSwapObject = r.links.select(function(wl){return wl.original})[0];
         }else{
-          var swapID = r._id;
           pollingTimer = setInterval(function(){
-            $http({method: "POST", url: "/poll.json?swap_id=" + swapID}).success(function(rPoll, status, headers, config){
+            $http({method: "POST", url: "/poll.json?swap_id=" + r.swapID}).success(function(rPoll, status, headers, config){
               if(rPoll.pollStatus == null || isNaN(rPoll.pollStatus)){
                 alert("Poll Server response body without poll status!");
                 $scope.restart();
               }else{
                 if(rPoll.pollStatus == 2){
                   $scope.swapStatus = 2;
-                  $scope.incomingSwapObject = rPoll.webLinks.select(function(wl){return !wl.original})[0];
+                  $scope.incomingSwapObject = rPoll.links.select(function(wl){return !wl.original})[0];
                   clearInterval(pollingTimer);
                 }
               }
             }).error(function(){
-              alert("Poll Unreachable/Error response!");
+              console.log("Poll Unreachable/Error response!");
               $scope.restart();
             });
           }, 3000);
