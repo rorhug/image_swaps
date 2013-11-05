@@ -6,15 +6,13 @@
   "repository": "git@github.com:RoryDH/image_swaps.git",
   "dependencies": {
     "mongoose": "3.6.x",
-    // "underscore": "1.5.2",
     "express": "3.x",
-    // "request": "2.27.x",
     "validator": "2.x",
     "toobusy": "0.2.x"
   },
   "engines": {
     "node": "0.10.x",
-    "npm": "1.3.x"
+    "npm":  "1.3.x"
   },
   "license": "MIT"
 }
