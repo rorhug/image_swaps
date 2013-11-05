@@ -2,7 +2,6 @@
 
 console.log("ImageSwaps server... STARTED")
 
-
 //==============Modules
 
 var express = require('express'),
@@ -17,11 +16,13 @@ var mongoose = require('mongoose');
 
 var _ = require('underscore');
 
-var Validator = require('validator').Validator
+var Validator = require('validator').Validator;
 var sanitize = require('validator').sanitize;
 
+var crypto = require('crypto');
+
 var toobusy = require('toobusy');
- 
+
 // middleware which blocks requests when too busy
 app.use(function(req, res, next) {
   if (toobusy()) {
@@ -62,17 +63,25 @@ function ers(error_list)
 function swapResString(o, status)
 {
   var links = _.map(o.webLinks, function(liO){return {desc:     liO.userDescription,
-                                                  url:      liO.webURL,
-                                                  original: liO.original}
-                                         });
+                                                      url:      liO.webURL,
+                                                      original: liO.original}
+                                             });
   return JSON.stringify({
-    swapID: o._id,
+    swapID: o.swapID,
     pollStatus: status,
     links: links 
   })
 }
 
+function sha1(x){
+  var shasum = crypto.createHash('sha1');
+  shasum.update(x);
+  return shasum.digest('hex');
+}
+
 //==============Database
+var salt = process.env.SWAP_ID_SALT || "omgg2gktnxbai";
+
 mongoose.connect(process.env.MONGOHQ_URL || 'mongodb://localhost/image_swaps');
 
 var db = mongoose.connection;
@@ -85,8 +94,6 @@ db.on('error', function(){
 db.once('open', function callback () {
   console.log("Database connected :P")
 });
-
-var mongoose = require('mongoose');
  
 var linkPairSchema = mongoose.Schema({
   createdAt: Date,
@@ -132,11 +139,12 @@ app.post("/swap.json", function(req, res){
     LinkPair.findOne({webLinks: {$size: 1}}, function(err, obj){
       if (err)
       {
-        res.end(er(["Database query error"]));
+        res.end(ers(["Database query error"]));
         return handleError(err);
       }
       if(obj)
       {
+        // Existing single link pair
         obj.webLinks.push({
           userDescription: postObj.desc,
           webURL: postObj.url,
@@ -152,6 +160,7 @@ app.post("/swap.json", function(req, res){
           res.end(swapResString(obj._doc, 2));
         });
       }else{
+        // New pair
         var newPair = new LinkPair({webLinks:[{
                                                userDescription: postObj.desc,
                                                webURL: postObj.url,
@@ -160,12 +169,12 @@ app.post("/swap.json", function(req, res){
                                              }],
                                     createdAt: timestamp
                                   });
+        newPair.swapID = sha1(newPair._id + salt);
         newPair.save(function (err, newPairSaved, numberAffected) {
           if (err) {
             res.end(er(["Error saving"]));
             return handleError(err);
           }
-
           res.end(swapResString(newPairSaved._doc, 1));
         });
       }
@@ -188,11 +197,11 @@ app.post("/poll.json", function(req, res){
 
   var v = new Validator();
   // Check if it is a 24 character mongo object id
-  v.check(suppliedPairId, "Invalid swap pair id").len(24, 24);
+  v.check(suppliedPairId, "Invalid swap pair id").len(40);
 
   if(v._errors.length == 0)
   {
-    LinkPair.findById(suppliedPairId, function(err, obj){
+    LinkPair.findOne({swapID: suppliedPairId}, function(err, obj){
       if (err)
       {
         res.end(er(["Database query error"]));

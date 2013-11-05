@@ -56,7 +56,6 @@ app.controller('HomeController', function($scope, $http, $timeout){
   $scope.restart();  
   $scope.newSwap = function(){
     if (!$scope.newSwapObject.desc || !$scope.newSwapForm.$valid){
-      alert("Form invalid...");
       return;
     }
     $scope.swapStatus = 1;
@@ -91,7 +90,7 @@ app.controller('HomeController', function($scope, $http, $timeout){
               console.log("Poll Unreachable/Error response!");
               $scope.restart();
             });
-          }, 3000);
+          }, 5000);
         }
       }
     }).error(function(){

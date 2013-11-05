@@ -14,7 +14,7 @@
 	    </textarea>
 		</div>
   </fieldset>
-  <button type="submit" class="pure-button pure-input-1 pure-button-xlarge {{newSwapForm.$valid ? 'pure-button-success' : ''}}" analytics-on="click" analytics-event="swap_attempt">Swap your image!</button>
+  <button type="submit" class="pure-button pure-input-1 pure-button-xlarge {{newSwapForm.$valid ? 'pure-button-success' : ''}}" analytics-on="click" analytics-event="swap_attempt">{{newSwapForm.$valid ? 'Swap your image!' : 'Enter info &#8593; and click here!'}}</button>
 </form>
 
 <div ng-show="swapStatus">
