@@ -117,6 +117,7 @@ app.post("/swap.json", function(req, res){
   if(v._errors.length == 0)
   {
     // Get database record with no second image in pair
+    // TODO Don't look for ones with same image link
     LinkPair.findOne({webLinks: {$size: 1}}, function(err, obj){
       if (err)
       {
@@ -138,7 +139,7 @@ app.post("/swap.json", function(req, res){
             return handleError(err);
           }
 
-          res.end(JSON.stringify(extend({pollStatus: 2}, obj)._doc));
+          res.end(JSON.stringify(extend({pollStatus: 2}, obj._doc)));
         });
       }else{
         console.log("new");
@@ -164,8 +165,6 @@ app.post("/swap.json", function(req, res){
     // Send validation errors
     res.end(ers(v._errors));
   }
-
-  // res.end(ers(["unknowen error"]));
   
 });
 

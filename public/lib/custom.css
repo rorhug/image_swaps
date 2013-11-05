@@ -1,25 +1,28 @@
-.pure-button-success {
-  background: rgb(28, 184, 65); /* this is a green */
+.pure-menu-heading.page-title, .pure-button-success {
+  background: rgb(28, 184, 65);
   color: #ffffff;
 }
 
 .pure-button-error {
-  background: rgb(202, 60, 60); /* this is a maroon */
+  background: rgb(202, 60, 60);
 }
 
 .pure-button-warning {
-  background: rgb(223, 117, 20); /* this is an orange */
+  background: rgb(223, 117, 20);
 }
 
 .pure-button-secondary {
-  background: rgb(66, 184, 221); /* this is a light blue */
+  background: rgb(66, 184, 221);
+}
+.pure-button-xlarge {
+  font-size: 125%;
 }
 
 footer
 {
   text-align: center;
   margin-top: 25px;
-  padding-top: 6px;
+  padding: 6px 0px;
   border-top: 1px solid #c6ded1;
   font-size: 12px;
   color: #6b8663;
@@ -32,3 +35,34 @@ footer a:visited
 {
   color: #6b8663;
 }
+.pure-menu a, .pure-menu .pure-menu-heading {
+  line-height: 1.7em;
+}
+.pure-menu-heading.page-title
+{
+  font-size: 19px;
+  padding-top: 0px;
+  text-transform: none;
+}
+.pure-menu-heading.page-title:hover
+{
+  background: rgb(15, 160, 41);
+}
+#desc
+{
+  max-width: 66%;
+  max-height: 300px;
+}
+.image-desc
+{
+  background-color: #f6f6f6;
+  border: solid 1px #e0e0e0;
+  margin-bottom: 5px;
+  padding: 4px;
+  font-size: 13px;
+}
+.image-itself
+{
+  border: solid 1px #e0e0e0;
+}
+

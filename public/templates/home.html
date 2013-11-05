@@ -1,15 +1,51 @@
 <h3>Swap an image with someone...</h3>
-
-<form novalidate class="pure-form pure-form-aligned new-swap-form" ng-submit="test()">
+<button ng-show="swapStatus > 0" class="pure-button pure-input-1 {{swapStatus > 1 ? 'pure-button-primary pure-button-xlarge' : ''}}" ng-click="restart()">
+	Restart
+</button>
+<form novalidate name="newSwapForm" class="pure-form pure-form-aligned new-swap-form" ng-submit="newSwap()" ng-hide="swapStatus">
   <fieldset>
 		<div class="pure-control-group">
 	    <label for="url">Link to an image</label>
-	    <input id="url" type="text" class="pure-input-2-3" placeholder="http://i.imgur.com/DuBec8q.gif" ng-model="newSwapObject.url">
+	    <input id="url" type="url" class="pure-input-2-3" placeholder="http://i.imgur.com/DuBec8q.gif" ng-model="newSwapObject.url" ng-required>
 		</div>
 		<div class="pure-control-group">
 	    <label for="desc">Description or message</label>
-	    <input id="desc" type="text" class="pure-input-2-3" placeholder="Funny cat GIF..." ng-model="newSwapObject.desc">
+	    <textarea id="desc" type="text" class="pure-input-2-3" maxlength="250" placeholder="Funny cat GIF..." ng-model="newSwapObject.desc" ng-maxlength="250" ng-minlength="1" ng-required>
+	    </textarea>
 		</div>
   </fieldset>
-  <button type="submit" class="pure-button pure-input-1 pure-button-success">Swap your image!</button>
+  <button type="submit" class="pure-button pure-input-1 pure-button-xlarge {{newSwapForm.$valid ? 'pure-button-success' : ''}}">Swap your image!</button>
 </form>
+
+<div ng-show="swapStatus">
+  <script type="text/javascript"><!--
+	google_ad_client = "ca-pub-0609957429635862";
+	/* imageswaps_halfway */
+	google_ad_slot = "7436480870";
+	google_ad_width = 468;
+	google_ad_height = 60;
+	//-->
+	</script>
+	<script type="text/javascript"
+	src="//pagead2.googlesyndication.com/pagead/show_ads.js">
+	</script>
+</div>
+
+<div class="pure-g-r swap-container">
+  <div class="pure-u-1-2" ng-show="swapStatus">
+  	<div ng-show="swapStatus == 1" class="loading">
+  		looking for a match
+  		<img src="loader.gif">
+  	</div>
+  	<div ng-show="swapStatus == 2">
+	  	<h4>Their image...</h4>
+	  	<div class="image-desc" ng-bind="incomingSwapObject.userDescription"></div>
+	  	<a href="{{incomingSwapObject.webURL}}" target="_blank"><img class="image-itself" ng-src="{{incomingSwapObject.webURL}}"></a>
+  	</div>
+  </div>
+  <div class="pure-u-1-2" ng-show="newSwapObject.url && newSwapForm.$valid">
+  	<h4>Your Image...</h4>
+  	<div class="image-desc" ng-bind="newSwapObject.desc || 'type a description in the box above...'"></div>
+  	<a href="{{newSwapObject.url}}" target="_blank"><img class="image-itself" ng-src="{{newSwapObject.url}}"></a>
+  </div>
+</div>
