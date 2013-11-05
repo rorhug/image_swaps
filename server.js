@@ -61,7 +61,7 @@ function ers(error_list)
 }
 
 //==============Database
-mongoose.connect('mongodb://localhost/image_swaps');
+mongoose.connect(process.env.MONGOHQ_URL || 'mongodb://localhost/image_swaps');
 
 var db = mongoose.connection;
 
