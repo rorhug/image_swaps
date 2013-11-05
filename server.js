@@ -9,6 +9,7 @@ var express = require('express'),
     app = express();
 
 app.use(express.bodyParser());
+app.use(express.logger());
 
 var mongoose = require('mongoose');
 
@@ -90,11 +91,9 @@ app.get("/", function(req, res){
 
 app.post("/swap.json", function(req, res){
   var timestamp = new Date;
-  console.log("===/post.json=== at:", timestamp)
 
   res.setHeader('Content-Type', 'text/json');
   var ip = req.connection.remoteAddress;
-  console.log(ip);
 
   // Post object is a json string in the form of:
   // {"desc": "cool cat", "url": "http://imgur.com/catpic"}
@@ -126,7 +125,6 @@ app.post("/swap.json", function(req, res){
       }
       if(obj)
       {
-        console.log("existing");
         obj.webLinks.push({
           userDescription: postObj.desc,
           webURL: postObj.url,
@@ -142,7 +140,6 @@ app.post("/swap.json", function(req, res){
           res.end(JSON.stringify(extend({pollStatus: 2}, obj._doc)));
         });
       }else{
-        console.log("new");
         var newPair = new LinkPair({webLinks:[{
                                                userDescription: postObj.desc,
                                                webURL: postObj.url,
@@ -170,11 +167,9 @@ app.post("/swap.json", function(req, res){
 
 app.post("/poll.json", function(req, res){
   var timestamp = new Date;
-  console.log("===/post.json=== at:", timestamp)
 
   res.setHeader('Content-Type', 'text/json');
   var ip = req.connection.remoteAddress;
-  console.log(ip);
 
   //get the swap id url param
   var suppliedPairId = req.query.swap_id;
