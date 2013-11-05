@@ -2,7 +2,6 @@
   "name": "image_swaps",
   "version": "0.0.1",
   "description": "Share photos...",
-  "keywords": [],
   "repository": "git@github.com:RoryDH/image_swaps.git",
   "dependencies": {
     "mongoose": "3.6.x",

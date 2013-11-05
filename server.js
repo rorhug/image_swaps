@@ -12,9 +12,9 @@ app.use(express.bodyParser());
 
 var mongoose = require('mongoose');
 
-var request = require('request');
+// var request = require('request');
 
-var u_ = require('underscore');
+// var u_ = require('underscore');
 
 var Validator = require('validator').Validator
 var sanitize = require('validator').sanitize;
@@ -210,4 +210,5 @@ app.post("/poll.json", function(req, res){
 //Static files
 app.use('/', express.static(__dirname + '/public'));
 
-app.listen(3000);
+var port = process.env.PORT || 3000;
+app.listen(port);
