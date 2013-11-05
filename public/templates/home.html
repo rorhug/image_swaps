@@ -43,7 +43,7 @@
 	  	<a href="{{incomingSwapObject.url}}" target="_blank"><img class="image-itself" ng-src="{{incomingSwapObject.url}}"></a>
   	</div>
   </div>
-  <div class="pure-u-1-2" ng-show="newSwapObject.url && newSwapForm.$valid">
+  <div class="pure-u-1-2" ng-hide="newSwapForm.$error.url || !newSwapObject.url">
   	<h4>Your Image...</h4>
   	<div class="image-desc" ng-bind="newSwapObject.desc || 'type a description in the box above...'"></div>
   	<a href="{{newSwapObject.url}}" target="_blank"><img class="image-itself" ng-src="{{newSwapObject.url}}"></a>
