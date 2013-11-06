@@ -1,6 +1,6 @@
 <h3>Swap an image with a random person!</h3>
-<button ng-show="swapStatus > 0" class="pure-button pure-input-1 {{swapStatus > 1 ? 'pure-button-primary pure-button-xlarge' : ''}}" ng-click="restart()" analytics-on="click" analytics-event="restart_swap">
-	Restart
+<button ng-show="swapStatus > 0" class="pure-button pure-input-1 {{swapStatus > 1 ? 'pure-button-primary' : 'pure-button-error pure-button-small'}}" ng-click="restart()" analytics-on="click" analytics-event="restart_swap">
+	{{swapStatus > 1 ? 'New swap' : 'Leave - New Swap'}}
 </button>
 <form novalidate name="newSwapForm" class="pure-form pure-form-aligned new-swap-form" ng-submit="newSwap()" ng-hide="swapStatus">
   <fieldset>
