@@ -22,6 +22,9 @@ app.config(function($routeProvider, $locationProvider) {
     }).
     when('/help', {
       templateUrl: 'templates/help.html'
+    }).
+    otherwise({
+      templateUrl: 'templates/not_found.html'
     });
 });
 
