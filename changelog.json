@@ -1,0 +1,35 @@
+{
+	"coming_soon": [
+		"Chat with the random person after swap.",
+		"Page with live stream of images being swapped along with most swapped url.",
+		"Uploading images so you don't have to post them on another sharing site.",
+		"Swap videos from YouTube etc.",
+		"Draw pictures on HTML5 canvas."
+	],
+	"log": [
+		{
+			"version": "0.1.0",
+			"date": "6/11/13",
+			"changes": [
+				"Added ReSwapping",
+				"More bug fixes",
+				"Change some copy"
+			]
+		},
+		{
+			"version": "0.0.2",
+			"date": "5/11/13",
+			"changes": [
+				"Loads of bug fixes",
+				"New API for sending and recieving images"
+			]
+		},
+		{
+			"version": "0.0.1",
+			"date": "4/11/13",
+			"changes": [
+				"Original Version"
+			]
+		}
+	]
+}

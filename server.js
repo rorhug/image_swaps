@@ -123,6 +123,11 @@ app.get("/", function(req, res){
   res.sendfile("public/index.html");
 });
 
+app.get("/changes.json", function(req, res){
+  res.type('application/json');
+  res.sendfile("changelog.json");
+});
+
 app.post("/swap.json", function(req, res){
   var timestamp = new Date;
 

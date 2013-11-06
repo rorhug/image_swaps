@@ -10,3 +10,28 @@ Contact me
 Special thanks to Richard Hughes
 <a href="mailto:richard@hughes.ie">email</a>
 <a href="https://twitter.com/RWJHughes">twitter</a>
+
+<div ng-controller="ChangeLogController">
+	<div class="pure-g-r">
+		<div class="pure-u-1-2 changelog">
+			<h3>Changelog</h3>
+			<div class="pure-g-r" ng-repeat="ver in versions" ng-class="$first ? 'current' : 'previous'">
+		    <div class="pure-u-1-6">
+					<h3 ng-bind="ver.version" class="version-number"></h3>
+					<p ng-bind="ver.date" class="small-faded version-date"></p>
+		    </div>
+		    <div class="pure-u-5-6">
+		    	<ul class="change-list">
+		    		<li ng-repeat="chng in ver.changes" ng-bind="chng" class="small"></li>
+		    	</ul>
+		    </div>
+			</div>
+		</div>
+		<div class="pure-u-1-2">
+			<h3>Upcoming features/ideas</h3>
+			<ul class="change-list" ng-repeat="i in ideas">
+				<li ng-bind="i" class="small"></li>
+			</ul>
+		</div>
+	</div>
+</div>

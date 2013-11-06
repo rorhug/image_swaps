@@ -98,3 +98,15 @@ app.controller('HomeController', function($scope, $http, $timeout){
     });
   }
 });
+
+app.controller('ChangeLogController', function($scope, $http){
+  $http({
+    method: "GET",
+    url: "/changes.json"
+  }).success(function(response, status, headers) {
+    $scope.versions = response.log;
+    $scope.ideas = response.coming_soon;
+  }).error(function(){
+    $scope.loadError = "Error Loading Changelog";
+  });
+});

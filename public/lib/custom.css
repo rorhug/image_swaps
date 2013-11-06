@@ -92,10 +92,13 @@ ins.adsbygoogle
   margin-top: 10px;
   display: block !important;
 }
+.small, .small-faded
+{
+  font-size: 14px;
+}
 .small-faded
 {
   color: #595959;
-  font-size: 13px;
 }
 .img-url-help
 {
@@ -104,4 +107,24 @@ ins.adsbygoogle
 .center-margin
 {
   margin: 0 auto;
+}
+.version-number
+{
+  margin: 0;
+}
+.change-list
+{
+  margin: 0;
+}
+.changelog .current, .previous
+{
+  border-top: solid 1px #00ca31;
+}
+.changelog .current
+{
+  background-color: #a0ffc9;
+}
+.changelog .previous
+{
+  background-color: #d7feff;
 }
