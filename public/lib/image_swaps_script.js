@@ -15,18 +15,29 @@ app.config(function($routeProvider, $locationProvider) {
   $routeProvider.
     when('/', {
       controller: 'HomeController',
-      templateUrl: 'templates/home.html'
+      templateUrl: 'templates/home.html',
+      title: "Swap"
     }).
     when('/about', {
-      templateUrl: 'templates/about.html'
+      templateUrl: 'templates/about.html',
+      title: "About"
     }).
     when('/help', {
-      templateUrl: 'templates/help.html'
+      templateUrl: 'templates/help.html',
+      title: "Help"
     }).
     otherwise({
-      templateUrl: 'templates/not_found.html'
+      templateUrl: 'templates/not_found.html',
+      title: "Not Found"
     });
 });
+
+
+app.run(['$location', '$rootScope', function($location, $rootScope) {
+    $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
+        $rootScope.title = current.$$route.title;
+    });
+}]);
 
 app.directive('activeTab', function ($location) {
   return {
