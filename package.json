@@ -9,7 +9,6 @@
     "validator": "2.x",
     "toobusy": "0.2.x",
     "underscore": "1.5.x",
-    "mmmagic": "0.3.x",
     "request": "2.x"
   },
   "engines": {
