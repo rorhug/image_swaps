@@ -19,7 +19,7 @@
 	    </textarea>
 		</div>
   </fieldset>
-  <button type="submit" class="pure-button pure-input-1 pure-button-xlarge {{newSwapForm.$valid ? 'pure-button-success' : ''}}" analytics-on="click" analytics-event="swap_attempt">{{newSwapForm.$valid ? 'Swap your image!' : 'Enter info &#8593; and click here!'}}</button>
+  <button type="submit" class="pure-button pure-input-1 pure-button-xlarge {{validSwap() ? 'pure-button-success' : ''}}" analytics-on="click" analytics-event="swap_attempt">{{validSwap() ? 'Swap your image!' : 'Enter info &#8593; and click here!'}}</button>
 </form>
 
 <div ng-show="swapStatus">
@@ -43,14 +43,17 @@
   	<div ng-show="swapStatus == 2">
 	  	<h4>Their image...</h4>
 	  	<div class="image-desc" ng-bind="incomingSwapObject.desc"></div>
-	  	<a href="{{incomingSwapObject.url}}" target="_blank"><img class="image-itself" ng-src="{{incomingSwapObject.url}}"></a>
+	  	<a href="{{incomingSwapObject.url}}" target="_blank"><img class="image-itself" ng-src="{{incomingSwapObject.url}}" /></a>
 	  	<button class="pure-button pure-button-warning pure-button-small" ng-click="restart(incomingSwapObject.url)">ReSwap their image!</button>
   	</div>
   </div>
   <div class="pure-u-1-2" ng-hide="newSwapForm.$error.url || !newSwapObject.url">
   	<h4>Your Image...</h4>
   	<div class="image-desc" ng-bind="newSwapObject.desc || 'type a description in the box above...'"></div>
-  	<a href="{{newSwapObject.url}}" target="_blank"><img class="image-itself" ng-src="{{newSwapObject.url}}"></a>
-  	<p class="small-faded" ng-hide="swapStatus == 2">(If you don't see your picture above, you need to make sure the url actually points to an image and not a web page. <a href="/#/help" target="_blank">Wait what?</a>)</p>
+  	<a href="{{newSwapObject.url}}" target="_blank"><img verify-img class="image-itself" ng-src="{{newSwapObject.url}}" /></a>
+  	<div class="image-load-error" ng-hide="validImgLink.valid">
+  		<div class="image-load-error-title">Couldn't Load Image</div>
+  		You need to make sure the url actually points to an image and not a web page. <a href="/#/help" target="_blank">Wait what?</a>
+  	</div>
   </div>
 </div>

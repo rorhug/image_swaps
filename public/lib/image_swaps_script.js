@@ -47,6 +47,20 @@ app.directive('activeTab', function ($location) {
   };
 });
 
+app.directive('verifyImg', function () {
+  return {
+    restrict: "A",
+    link: function (scope, iElement, iAttrs) {
+      iElement.bind('error', function() {
+        scope.setValidImage(angular.element(this).attr("src"), false);
+      });
+      iElement.bind('load', function() {
+        scope.setValidImage(angular.element(this).attr("src"), true);
+      });
+    }
+  }
+});
+
 app.controller('HomeController', function($scope, $http, $timeout){
   var pollingTimer = null;
   $scope.restart = function(newSwapUrl){
@@ -54,11 +68,24 @@ app.controller('HomeController', function($scope, $http, $timeout){
     $scope.swapStatus = false;
     $scope.userImage = "";
     $scope.incomingSwapObject = {};
+    $scope.validImgLink = {url: "", valid: null};
     clearInterval(pollingTimer);
   }
   $scope.restart();
+
+  $scope.setValidImage = function(link, vld) {
+    $scope.validImgLink = { url: link, valid: vld };
+    $scope.$apply();
+  }
+
+  $scope.validSwap = function() {
+    return $scope.newSwapObject.desc &&
+           $scope.newSwapForm.$valid &&
+           ($scope.validImgLink.valid && ($scope.validImgLink.url == $scope.newSwapObject.url));
+  }
+
   $scope.newSwap = function(){
-    if (!$scope.newSwapObject.desc || !$scope.newSwapForm.$valid){
+    if (!validSwap()){
       return;
     }
     $scope.swapStatus = 1;

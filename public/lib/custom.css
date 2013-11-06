@@ -115,7 +115,7 @@ ins.adsbygoogle
 }
 .change-list
 {
-  margin: 0;
+  margin: 2px 0 4px 0;
 }
 .changelog .current, .previous
 {
@@ -128,4 +128,21 @@ ins.adsbygoogle
 .changelog .previous
 {
   background-color: #d7feff;
+}
+.image-load-error
+{
+  margin: 3px 0 0 0;
+  border-radius: 3px;
+  background-color: #a20012;
+  color: #ebafb0;
+  padding: 3px;
+}
+.image-load-error a
+{
+  color: #f9eaea;
+}
+.image-load-error-title
+{
+  font-size: 19px;
+  color: #ffffff;
 }
