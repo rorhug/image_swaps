@@ -1,5 +1,5 @@
 <h3>Swap an image with a random person!</h3>
-<button ng-show="swapStatus > 0" class="pure-button pure-input-1 {{swapStatus > 1 ? 'pure-button-primary' : 'pure-button-error pure-button-small'}}" ng-click="restart()" analytics-on="click" analytics-event="restart_swap">
+<button ng-show="swapStatus > 0" class="pure-button pure-input-1 {{swapStatus > 1 ? 'pure-button-primary' : 'pure-button-error pure-button-small'}}" ng-click="restart()" analytics-on analytics-event="restart_swap">
 	{{swapStatus > 1 ? 'New swap' : 'Leave - New Swap'}}
 </button>
 <form novalidate name="newSwapForm" class="pure-form pure-form-aligned new-swap-form" ng-submit="newSwap()" ng-hide="swapStatus">
@@ -19,7 +19,7 @@
 	    </textarea>
 		</div>
   </fieldset>
-  <button type="submit" class="pure-button pure-input-1 pure-button-xlarge {{validSwap() ? 'pure-button-success' : ''}}" analytics-on="click" analytics-event="swap_attempt">{{validSwap() ? 'Swap your image!' : 'Enter info &#8593; and click here!'}}</button>
+  <button type="submit" class="pure-button pure-input-1 pure-button-xlarge {{validSwap() ? 'pure-button-success' : ''}}" analytics-on analytics-event="swap_attempt">{{validSwap() ? 'Swap your image!' : 'Enter info &#8593; and click here!'}}</button>
 </form>
 
 <div ng-show="swapStatus">
@@ -53,7 +53,7 @@
   	<a href="{{newSwapObject.url}}" target="_blank"><img verify-img class="image-itself" ng-src="{{newSwapObject.url}}" /></a>
   	<div class="image-load-error" ng-hide="validImgLink.valid">
   		<div class="image-load-error-title">Couldn't Load Image</div>
-  		You need to make sure the url actually points to an image and not a web page. <a href="/#/help" target="_blank">Wait what?</a>
+  		You need to make sure the url actually points to an image and not a web page. <a href="/#/help" target="_blank">Wait, what?</a>
   	</div>
   </div>
 </div>

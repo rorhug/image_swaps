@@ -8,7 +8,7 @@ Array.prototype.select = function(closure){
   return filtered;
 };
 
-var app = angular.module("imageswaps", ['ngRoute','angulartics','angulartics.google.analytics']);
+var app = angular.module("imageswaps", ['ngRoute','angulartics']);
 
 app.config(function($routeProvider, $locationProvider) {
   // $locationProvider.html5Mode(true);
