@@ -46,14 +46,14 @@ app.directive('activeTab', function ($location) {
 
 app.controller('HomeController', function($scope, $http, $timeout){
   var pollingTimer = null;
-  $scope.restart = function(){
-    $scope.newSwapObject = {};
+  $scope.restart = function(newSwapUrl){
+    $scope.newSwapObject = {url: newSwapUrl};
     $scope.swapStatus = false;
     $scope.userImage = "";
     $scope.incomingSwapObject = {};
     clearInterval(pollingTimer);
   }
-  $scope.restart();  
+  $scope.restart();
   $scope.newSwap = function(){
     if (!$scope.newSwapObject.desc || !$scope.newSwapForm.$valid){
       return;

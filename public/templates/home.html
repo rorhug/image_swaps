@@ -8,9 +8,10 @@
 	    <label for="url">Link to an image</label>
 	    <input id="url" type="url" class="pure-input-2-3" placeholder="http://i.imgur.com/DuBec8q.gif" ng-model="newSwapObject.url" ng-required>
 		</div>
-		<div class="pure-control-group">
-	    <label></label>
-	    <span class="small-faded">You can find loads on <a href="http://imgur.com/r/funny" target="_blank">imgur</a></span>
+		<div class="clear">
+	    <div class="small-faded img-url-help">
+	    	You can find loads on <a href="http://imgur.com/r/funny" target="_blank">imgur</a> or <a href="https://www.google.com/imghp">Google images</a>. Copy the image's url and paste it above!
+	    </div>
 		</div>
 		<div class="pure-control-group">
 	    <label for="desc">Description or message</label>
@@ -43,6 +44,7 @@
 	  	<h4>Their image...</h4>
 	  	<div class="image-desc" ng-bind="incomingSwapObject.desc"></div>
 	  	<a href="{{incomingSwapObject.url}}" target="_blank"><img class="image-itself" ng-src="{{incomingSwapObject.url}}"></a>
+	  	<button class="pure-button pure-button-warning pure-button-small" ng-click="restart(incomingSwapObject.url)">ReSwap their image!</button>
   	</div>
   </div>
   <div class="pure-u-1-2" ng-hide="newSwapForm.$error.url || !newSwapObject.url">
