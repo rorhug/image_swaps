@@ -96,7 +96,7 @@ app.controller('HomeController', function($scope, $http, $timeout){
   }
 
   $scope.newSwap = function(){
-    if (!validSwap()){
+    if (!$scope.validSwap()){
       return;
     }
     $scope.swapStatus = 1;
