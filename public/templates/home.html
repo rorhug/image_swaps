@@ -41,10 +41,12 @@
   		<img src="loader.gif">
   	</div>
   	<div ng-show="swapStatus == 2">
-	  	<h4>Their image...</h4>
+	  	<h4>
+	  		Their image...
+		  	<button class="pure-button pure-button-warning pure-button-small" ng-click="restart(incomingSwapObject.url)">ReSwap IT!</button>
+		  </h4>
 	  	<div class="image-desc" ng-bind="incomingSwapObject.desc"></div>
 	  	<a href="{{incomingSwapObject.url}}" target="_blank"><img class="image-itself" ng-src="{{incomingSwapObject.url}}" /></a>
-	  	<button class="pure-button pure-button-warning pure-button-small" ng-click="restart(incomingSwapObject.url)">ReSwap their image!</button>
   	</div>
   </div>
   <div class="pure-u-1-2" ng-hide="newSwapForm.$error.url || !newSwapObject.url">

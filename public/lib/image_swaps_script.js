@@ -79,7 +79,7 @@ app.controller('HomeController', function($scope, $http, $timeout){
     $scope.swapStatus = false;
     $scope.userImage = "";
     $scope.incomingSwapObject = {};
-    $scope.validImgLink = {url: "", valid: null};
+    $scope.validImgLink = {url: newSwapUrl, valid: !!newSwapUrl};
     clearInterval(pollingTimer);
   }
   $scope.restart();
@@ -97,6 +97,7 @@ app.controller('HomeController', function($scope, $http, $timeout){
 
   $scope.newSwap = function(){
     if (!$scope.validSwap()){
+      console.log($scope.validImgLink.valid, $scope.newSwapForm.$valid);
       return;
     }
     $scope.swapStatus = 1;
