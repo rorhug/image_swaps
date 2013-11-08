@@ -63,7 +63,12 @@ app.directive('verifyImg', function () {
     restrict: "A",
     link: function (scope, iElement, iAttrs) {
       iElement.bind('error', function() {
-        scope.setValidImage(angular.element(this).attr("src"), false);
+        var imgSrc = angular.element(this).attr("src");
+        // check if not "http://". 
+        // It doesn't try and load in the browser but throws a load error :/
+        if(imgSrc !== "http://"){
+          scope.setValidImage(angular.element(this).attr("src"), false);
+        }
       });
       iElement.bind('load', function() {
         scope.setValidImage(angular.element(this).attr("src"), true);
@@ -76,7 +81,7 @@ app.controller('HomeController', function($scope, $http, $timeout){
   var pollingTimer = null;
   $scope.restart = function(newSwapUrl){
     // Hack used to make angular update the 
-    $scope.newSwapObject = {url: newSwapUrl || " "};
+    $scope.newSwapObject = {url: newSwapUrl || "http://"};
     $scope.swapStatus = false;
     $scope.userImage = "";
     $scope.incomingSwapObject = {};
