@@ -12,7 +12,7 @@ app.use(express.logger());
 
 var mongoose = require('mongoose');
 
-// var request = require('request');
+var request = require('request');
 
 var _ = require('underscore');
 
@@ -22,6 +22,8 @@ var sanitize = require('validator').sanitize;
 var crypto = require('crypto');
 
 var toobusy = require('toobusy');
+
+var url = require("url");
 
 // middleware which blocks requests when too busy
 app.use(function(req, res, next) {
@@ -60,12 +62,22 @@ function ers(error_list)
   return JSON.stringify({errors: error_list})
 }
 
-function swapResString(o, status)
+// EXPERIMENTAL image proxying feature for where imgur etc. is firewalled
+// var proxyIPs = process.env.PROXY_IPS ? process.env.PROXY_IPS.split("-") : [];
+// var proxyIPs = ["127.0.0.1"];
+// var proxyDomains = ["i.imgur.com"];
+
+function swapResString(o, status, ip)
 {
-  var links = _.map(o.webLinks, function(liO){return {desc:     liO.userDescription,
-                                                      url:      liO.webURL,
-                                                      original: liO.original}
-                                             });
+  var links = _.map(o.webLinks, function(liO){
+    // var useProxy = _.contains(proxyIPs, ip) && _.contains(proxyDomains, url.parse(liO.webURL).host);
+    return {
+      desc:     liO.userDescription,
+      // url:      useProxy ? "localhost:3000/proxyimage?imageurl=" + liO.webURL : liO.webURL,
+      url: liO.webURL,
+      original: liO.original
+    }
+  });
   return JSON.stringify({
     swapID: o.swapID,
     pollStatus: status,
@@ -128,6 +140,23 @@ app.get("/changes.json", function(req, res){
   res.sendfile("changelog.json");
 });
 
+// EXPERIMENTAL image proxying feature for where imgur etc. is firewalled
+// app.get("/proxyimage", function(req, res){
+//   var suppliedAddress = req.query.imageurl;
+//   if(suppliedAddress){
+//     request({url: suppliedAddress, timeout: 5000}, function (error, response, body) {
+//       if (!error && response.statusCode == 200) {
+//         res.end(body);
+//       }else{
+//         res.end("Error loading image address");
+//         console.log(error);
+//       }
+//     });
+//   }else{
+//     res.end("Error: No address")
+//   }
+// });
+
 app.post("/swap.json", function(req, res){
   var timestamp = new Date;
 
@@ -177,7 +206,7 @@ app.post("/swap.json", function(req, res){
             return handleError(err);
           }
 
-          res.end(swapResString(obj._doc, 2));
+          res.end(swapResString(obj._doc, 2, ip));
         });
       }else{
         // New pair
@@ -195,7 +224,7 @@ app.post("/swap.json", function(req, res){
             res.end(er(["Error saving"]));
             return handleError(err);
           }
-          res.end(swapResString(newPairSaved._doc, 1));
+          res.end(swapResString(newPairSaved._doc, 1, ip));
         });
       }
     });
@@ -230,7 +259,7 @@ app.post("/poll.json", function(req, res){
       if (obj)
       {
         var polStat = obj.webLinks.length == 1 ? 1 : 2;
-        res.end(swapResString(obj._doc, polStat));
+        res.end(swapResString(obj._doc, polStat, ip));
       }else{
         var errorObj = {pollStatus: 0, errors: ["Unable to find swap pair"]};
         res.end(JSON.stringify(errorObj));
