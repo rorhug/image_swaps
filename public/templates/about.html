@@ -21,15 +21,16 @@ Special thanks to Richard Hughes
 					<p ng-bind="ver.date" class="small-faded version-date"></p>
 		    </div>
 		    <div class="pure-u-5-6">
-		    	<ul class="change-list">
+		    	<ul class="list-item">
 		    		<li ng-repeat="chng in ver.changes" ng-bind="chng" class="small"></li>
 		    	</ul>
 		    </div>
 			</div>
+			<button class="show-all-versions pure-button pure-button-small pure-button-secondary" ng-click="showAll()" ng-show="versions.length == 3">Show all versions</button>
 		</div>
 		<div class="pure-u-1-2">
 			<h3>Upcoming features/ideas</h3>
-			<ul class="change-list" ng-repeat="i in ideas">
+			<ul class="list-item" ng-repeat="i in ideas">
 				<li ng-bind="i" class="small"></li>
 			</ul>
 		</div>

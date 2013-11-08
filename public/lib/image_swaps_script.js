@@ -148,13 +148,18 @@ app.controller('HomeController', function($scope, $http, $timeout){
 });
 
 app.controller('ChangeLogController', function($scope, $http){
+  var versionsLoaded = [];
   $http({
     method: "GET",
     url: "/changes.json"
   }).success(function(response, status, headers) {
-    $scope.versions = response.log;
+    versionsLoaded = response.log;
+    $scope.versions = versionsLoaded.concat().splice(0, 3);
     $scope.ideas = response.coming_soon;
   }).error(function(){
     $scope.loadError = "Error Loading Changelog";
   });
+  $scope.showAll = function(){
+    $scope.versions = versionsLoaded;
+  }
 });

@@ -52,6 +52,10 @@ footer a:visited
 {
   color: #6b8663;
 }
+.center-text
+{
+  text-align: center;
+}
 .pure-menu a, .pure-menu .pure-menu-heading {
   line-height: 1.7em;
 }
@@ -109,9 +113,13 @@ ins.adsbygoogle
 {
   margin: 0;
 }
-.change-list
+.list-item
 {
-  margin: 2px 0 4px 0;
+  margin: 2px 0 2px 0;
+}
+.changelog .show-all-versions
+{
+  margin-top: 5px;
 }
 .changelog .current, .previous
 {
