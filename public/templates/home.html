@@ -52,8 +52,16 @@
   <div class="pure-u-1-2" ng-hide="newSwapForm.$error.url || !newSwapObject.url">
   	<h4>Your Image...</h4>
   	<div class="image-desc" ng-bind="newSwapObject.desc || 'type a description in the box above...'"></div>
-  	<a href="{{newSwapObject.url}}" target="_blank"><img verify-img class="image-itself" ng-src="{{newSwapObject.url}}" /></a>
-  	<div class="image-load-error" ng-hide="validImgLink.valid">
+  	<p ng-hide="newSwapObject.url == validImgLink.url">
+  		Loading Image...
+  		<img src="loader2.gif">
+  	</p>
+  	<a href="{{newSwapObject.url}}" target="_blank">
+  		<img verify-img class="image-itself" ng-src="{{newSwapObject.url}}"/>
+  	</a>
+  	<div class="image-load-error" ng-show="validImgLink.valid === false">
+  		<!-- Reson it is set == to false is that it should not display as the first image loads
+  				and becuase it would as the variable would be null -->
   		<div class="image-load-error-title">Couldn't Load Image</div>
   		You need to make sure the url actually points to an image and not a web page. <a href="/#/help" target="_blank">Wait, what?</a>
   	</div>

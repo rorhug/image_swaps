@@ -34,9 +34,9 @@ app.config(function($routeProvider, $locationProvider) {
 
 
 app.run(['$location', '$rootScope', function($location, $rootScope) {
-    $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
-        $rootScope.title = current.$$route.title;
-    });
+  $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
+    $rootScope.title = current.$$route.title;
+  });
 }]);
 
 app.directive('activeTab', function ($location) {
@@ -75,11 +75,12 @@ app.directive('verifyImg', function () {
 app.controller('HomeController', function($scope, $http, $timeout){
   var pollingTimer = null;
   $scope.restart = function(newSwapUrl){
-    $scope.newSwapObject = {url: newSwapUrl};
+    // Hack used to make angular update the 
+    $scope.newSwapObject = {url: newSwapUrl || " "};
     $scope.swapStatus = false;
     $scope.userImage = "";
     $scope.incomingSwapObject = {};
-    $scope.validImgLink = {url: newSwapUrl, valid: !!newSwapUrl};
+    $scope.validImgLink = {url: newSwapUrl, valid: newSwapUrl || null};
     clearInterval(pollingTimer);
   }
   $scope.restart();
@@ -97,7 +98,6 @@ app.controller('HomeController', function($scope, $http, $timeout){
 
   $scope.newSwap = function(){
     if (!$scope.validSwap()){
-      console.log($scope.validImgLink.valid, $scope.newSwapForm.$valid);
       return;
     }
     $scope.swapStatus = 1;
@@ -120,6 +120,7 @@ app.controller('HomeController', function($scope, $http, $timeout){
             $http({method: "POST", url: "/poll.json?swap_id=" + r.swapID}).success(function(rPoll, status, headers, config){
               if(rPoll.pollStatus == null || isNaN(rPoll.pollStatus)){
                 alert("Poll Server response body without poll status!");
+                clearInterval(pollingTimer);
                 $scope.restart();
               }else{
                 if(rPoll.pollStatus == 2){
