@@ -69,6 +69,11 @@ footer a:visited
 {
   background: rgb(15, 160, 41);
 }
+.image-title
+{
+  margin: 7px 0px 4px 3px;
+  min-height: 30px;
+}
 #desc
 {
   max-width: 66%;

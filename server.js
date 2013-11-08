@@ -43,10 +43,15 @@ process.on('SIGINT', function() {
 
 //==============Functions/Vars
 
-var exec = require('child_process').exec;
-function execute(command, callback){
-    exec(command, function(error, stdout, stderr){ callback(stdout); });
-};
+function getIP(req){
+  return (req.headers['x-forwarded-for'] || '').split(',')[0] || req.connection.remoteAddress;
+}
+
+// UNUSED
+// var exec = require('child_process').exec;
+// function execute(command, callback){
+//   exec(command, function(error, stdout, stderr){ callback(stdout); });
+// };
 
 Validator.prototype.error = function (msg) {
   this._errors.push(msg);
@@ -125,7 +130,13 @@ db.once('open', function callback () {
 var linkPairSchema = mongoose.Schema({
   createdAt: Date,
   swapID: String,
-  webLinks: [{userDescription: String, webURL: String, ipAddress: String, original: Boolean}]
+  webLinks: [{
+              userDescription: String,
+              webURL: String,
+              ipAddress: String,
+              original: Boolean,
+              createdAt: Date
+            }]
 });
  
 var LinkPair = mongoose.model('LinkPair', linkPairSchema);
@@ -161,7 +172,7 @@ app.post("/swap.json", function(req, res){
   var timestamp = new Date;
 
   res.setHeader('Content-Type', 'text/json');
-  var ip = req.connection.remoteAddress;
+  var ip = getIP(req);
 
   // Post object is a json string in the form of:
   // {"desc": "cool cat", "url": "http://imgur.com/catpic"}
@@ -198,7 +209,8 @@ app.post("/swap.json", function(req, res){
           userDescription: postObj.desc,
           webURL: postObj.url,
           ipAddress: ip,
-          original: false
+          original: false,
+          createdAt: timestamp
         });
         obj.save(function (err, product, numberAffected) {
           if (err) {
@@ -214,7 +226,8 @@ app.post("/swap.json", function(req, res){
                                                userDescription: postObj.desc,
                                                webURL: postObj.url,
                                                ipAddress: ip,
-                                               original: true
+                                               original: true,
+                                               createdAt: timestamp
                                              }],
                                     createdAt: timestamp
                                   });
@@ -239,7 +252,7 @@ app.post("/poll.json", function(req, res){
   var timestamp = new Date;
 
   res.setHeader('Content-Type', 'text/json');
-  var ip = req.connection.remoteAddress;
+  var ip = getIP(req);
 
   //get the swap id url param
   var suppliedPairId = req.query.swap_id;
