@@ -8,6 +8,14 @@
 	],
 	"log": [
 		{
+			"version": "0.1.1",
+			"date": "8/11/13",
+			"changes": [
+				"Fixed many bugs with validating image existence"
+				"Added animation for image loading"
+			]
+		},
+		{
 			"version": "0.1.0",
 			"date": "6/11/13",
 			"changes": [
@@ -16,7 +24,7 @@
 				"Grey background for transperant images",
 				"Better UX in some places",
 				"Image validation (Checks the url is actually an image and not a web paget etc.)",
-				"Page title reflects current page now."
+				"Page title reflects current page now"
 			]
 		},
 		{
