@@ -29,7 +29,7 @@ app.use(function(req, res, next) {
     res.send(503, "I'm busy right now, sorry.");
   } else {
     next();
-  } 
+  }
 });
 
 process.on('SIGINT', function() {
@@ -83,17 +83,18 @@ var salt = process.env.SWAP_ID_SALT || "omgg2gktnxbai";
 
 console.log("Salt is: " + salt);
 
-var imageMimeTypes = ["image/gif",
-                      "image/jpeg",
-                      "image/pjpeg",
-                      "image/png",
-                      "image/svg+xml",
-                      "image/svg",
-                      "image/tiff",
-                      "image/webp",
-                      "image/x-icon",
-                      "image/ico",
-                      "image/bmp"]
+// UNUSED
+// var imageMimeTypes = ["image/gif",
+//                       "image/jpeg",
+//                       "image/pjpeg",
+//                       "image/png",
+//                       "image/svg+xml",
+//                       "image/svg",
+//                       "image/tiff",
+//                       "image/webp",
+//                       "image/x-icon",
+//                       "image/ico",
+//                       "image/bmp"]
 
 //==============Database
 
