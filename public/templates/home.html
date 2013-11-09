@@ -10,7 +10,7 @@
 		</div>
 		<div class="clear">
 	    <div class="small-faded img-url-help">
-	    	You can find loads on <a href="http://imgur.com/r/funny" target="_blank">imgur</a> or <a href="https://www.google.com/imghp">Google images</a>. Copy the image's url and paste it above!
+	    	You can find loads on <a href="http://imgur.com/r/funny" target="_blank">imgur</a> or <a href="https://www.google.com/imghp" target="_blank">Google images</a>. Copy the image's url and paste it above!
 	    </div>
 		</div>
 		<div class="pure-control-group">
@@ -41,17 +41,27 @@
   		<img src="loader.gif">
   	</div>
   	<div ng-show="swapStatus == 2">
-	  	<h4>Their image...</h4>
+	  	<h4 class="image-title">
+	  		Their image...
+		  	<button class="pure-button pure-button-warning pure-button-small" ng-click="restart(incomingSwapObject.url)">ReSwap this image!</button>
+		  </h4>
 	  	<div class="image-desc" ng-bind="incomingSwapObject.desc"></div>
 	  	<a href="{{incomingSwapObject.url}}" target="_blank"><img class="image-itself" ng-src="{{incomingSwapObject.url}}" /></a>
-	  	<button class="pure-button pure-button-warning pure-button-small" ng-click="restart(incomingSwapObject.url)">ReSwap their image!</button>
   	</div>
   </div>
   <div class="pure-u-1-2" ng-hide="newSwapForm.$error.url || !newSwapObject.url">
-  	<h4>Your Image...</h4>
+  	<h4 class="image-title">Your Image...</h4>
   	<div class="image-desc" ng-bind="newSwapObject.desc || 'type a description in the box above...'"></div>
-  	<a href="{{newSwapObject.url}}" target="_blank"><img verify-img class="image-itself" ng-src="{{newSwapObject.url}}" /></a>
-  	<div class="image-load-error" ng-hide="validImgLink.valid">
+  	<p ng-hide="newSwapObject.url == validImgLink.url">
+  		Loading Image...
+  		<img src="loader2.gif">
+  	</p>
+  	<a href="{{newSwapObject.url}}" target="_blank">
+  		<img verify-img class="image-itself" ng-src="{{newSwapObject.url}}"/>
+  	</a>
+  	<div class="image-load-error" ng-show="validImgLink.valid === false">
+  		<!-- Reson it is set == to false is that it should not display as the first image loads
+  				and becuase it would as the variable would be null -->
   		<div class="image-load-error-title">Couldn't Load Image</div>
   		You need to make sure the url actually points to an image and not a web page. <a href="/#/help" target="_blank">Wait, what?</a>
   	</div>

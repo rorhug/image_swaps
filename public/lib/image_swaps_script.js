@@ -34,9 +34,9 @@ app.config(function($routeProvider, $locationProvider) {
 
 
 app.run(['$location', '$rootScope', function($location, $rootScope) {
-    $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
-        $rootScope.title = current.$$route.title;
-    });
+  $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
+    $rootScope.title = current.$$route.title;
+  });
 }]);
 
 app.directive('activeTab', function ($location) {
@@ -63,7 +63,12 @@ app.directive('verifyImg', function () {
     restrict: "A",
     link: function (scope, iElement, iAttrs) {
       iElement.bind('error', function() {
-        scope.setValidImage(angular.element(this).attr("src"), false);
+        var imgSrc = angular.element(this).attr("src");
+        // check if not "http://". 
+        // It doesn't try and load in the browser but throws a load error :/
+        if(imgSrc !== "http://"){
+          scope.setValidImage(angular.element(this).attr("src"), false);
+        }
       });
       iElement.bind('load', function() {
         scope.setValidImage(angular.element(this).attr("src"), true);
@@ -75,11 +80,12 @@ app.directive('verifyImg', function () {
 app.controller('HomeController', function($scope, $http, $timeout){
   var pollingTimer = null;
   $scope.restart = function(newSwapUrl){
-    $scope.newSwapObject = {url: newSwapUrl};
+    // Hack used to make angular update the 
+    $scope.newSwapObject = {url: newSwapUrl || "http://"};
     $scope.swapStatus = false;
     $scope.userImage = "";
     $scope.incomingSwapObject = {};
-    $scope.validImgLink = {url: "", valid: null};
+    $scope.validImgLink = {url: newSwapUrl, valid: newSwapUrl || null};
     clearInterval(pollingTimer);
   }
   $scope.restart();
@@ -96,7 +102,7 @@ app.controller('HomeController', function($scope, $http, $timeout){
   }
 
   $scope.newSwap = function(){
-    if (!validSwap()){
+    if (!$scope.validSwap()){
       return;
     }
     $scope.swapStatus = 1;
@@ -119,6 +125,7 @@ app.controller('HomeController', function($scope, $http, $timeout){
             $http({method: "POST", url: "/poll.json?swap_id=" + r.swapID}).success(function(rPoll, status, headers, config){
               if(rPoll.pollStatus == null || isNaN(rPoll.pollStatus)){
                 alert("Poll Server response body without poll status!");
+                clearInterval(pollingTimer);
                 $scope.restart();
               }else{
                 if(rPoll.pollStatus == 2){
@@ -141,13 +148,18 @@ app.controller('HomeController', function($scope, $http, $timeout){
 });
 
 app.controller('ChangeLogController', function($scope, $http){
+  var versionsLoaded = [];
   $http({
     method: "GET",
     url: "/changes.json"
   }).success(function(response, status, headers) {
-    $scope.versions = response.log;
+    versionsLoaded = response.log;
+    $scope.versions = versionsLoaded.concat().splice(0, 3);
     $scope.ideas = response.coming_soon;
   }).error(function(){
     $scope.loadError = "Error Loading Changelog";
   });
+  $scope.showAll = function(){
+    $scope.versions = versionsLoaded;
+  }
 });
