@@ -6,20 +6,20 @@
   <fieldset>
 		<div class="pure-control-group">
 	    <label for="url">Link to an image</label>
-	    <input id="url" type="url" class="pure-input-2-3" placeholder="http://i.imgur.com/DuBec8q.gif" ng-model="newSwapObject.url" ng-required>
+	    <input tabindex="1" id="url" type="url" class="pure-input-2-3" placeholder="http://i.imgur.com/DuBec8q.gif" ng-model="newSwapObject.url" ng-required>
 		</div>
 		<div class="clear">
 	    <div class="small-faded img-url-help">
-	    	You can find loads on <a href="http://imgur.com/r/funny" target="_blank">imgur</a> or <a href="https://www.google.com/imghp" target="_blank">Google images</a>. Copy the image's url and paste it above!
+	    	You can find loads on <a href="http://imgur.com/r/funny" target="_blank" tabindex="5">imgur</a> or <a href="https://www.google.com/imghp" target="_blank" tabindex="4">Google images</a>. Copy the image's url and paste it above!
 	    </div>
 		</div>
 		<div class="pure-control-group">
 	    <label for="desc">Description or message</label>
-	    <textarea id="desc" type="text" class="pure-input-2-3" maxlength="250" placeholder="Funny cat GIF..." ng-model="newSwapObject.desc" ng-maxlength="250" ng-minlength="1" ng-required="true">
+	    <input tabindex="2" id="desc" type="text" class="pure-input-2-3" maxlength="250" placeholder="Funny cat GIF..." ng-model="newSwapObject.desc" ng-maxlength="250" ng-minlength="1" ng-required="true">
 	    </textarea>
 		</div>
   </fieldset>
-  <button type="submit" class="pure-button pure-input-1 pure-button-xlarge {{validSwap() ? 'pure-button-success' : ''}}" analytics-on analytics-event="swap_attempt">{{validSwap() ? 'Swap your image!' : 'Enter info &#8593; and click here!'}}</button>
+  <button tabindex="3" type="submit" class="pure-button pure-input-1 pure-button-xlarge {{validSwap() ? 'pure-button-success' : ''}}" analytics-on analytics-event="swap_attempt">{{validSwap() ? 'Swap your image!' : 'Enter info &#8593; and click here!'}}</button>
 </form>
 
 <div ng-show="swapStatus">

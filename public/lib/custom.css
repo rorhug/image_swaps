@@ -155,3 +155,17 @@ ins.adsbygoogle
   font-size: 19px;
   color: #ffffff;
 }
+ng-view
+{
+  display: block;
+}
+.pure-u-10-12
+{
+  width: 83.3333%;
+  display: inline-block;
+  zoom: 1;
+  letter-spacing: normal;
+  word-spacing: normal;
+  vertical-align: top;
+  text-rendering: auto;
+}
