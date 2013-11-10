@@ -34,7 +34,6 @@ process.on('SIGINT', function() {
 });
 
 // Socket chat
-
 var chat = require('./controllers/chat.js');
 io.enable('browser client minification');  // send minified client
 io.enable('browser client etag');          // apply etag caching logic based on version number

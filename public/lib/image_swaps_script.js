@@ -8,7 +8,7 @@ Array.prototype.select = function(closure){
   return filtered;
 };
 
-var app = angular.module("imageswaps", ['ngRoute','angulartics']);
+var app = angular.module("imageswaps", ['ngRoute']);
 
 app.config(function($routeProvider, $locationProvider) {
   // $locationProvider.html5Mode(true);
@@ -39,28 +39,53 @@ app.run(['$location', '$rootScope', function($location, $rootScope) {
   });
 }]);
 
-app.factory('socket', function ($rootScope) {
-  var socket = io.connect();
+// app.service('socket', function ($rootScope) {
+//   var socket = io.connect();
+//   return {
+//     joinRoom: function(roomName, callback){
+
+//     },
+//     on: function (eventName, callback) {
+//       socket.on(eventName, function () {  
+//         var args = arguments;
+//         $rootScope.$apply(function () {
+//           callback.apply(socket, args);
+//         });
+//       });
+//     },
+//     emit: function (eventName, data, callback) {
+//       socket.emit(eventName, data, function () {
+//         var args = arguments;
+//         $rootScope.$apply(function () {
+//           if (callback) {
+//             callback.apply(socket, args);
+//           }
+//         });
+//       })
+//     }
+//   };
+// });
+
+app.factory('swapHTTP', function($http) {
+
+  // factory returns an object
+  // you can run some code before
+
   return {
-    on: function (eventName, callback) {
-      socket.on(eventName, function () {  
-        var args = arguments;
-        $rootScope.$apply(function () {
-          callback.apply(socket, args);
-        });
-      });
+    swap: function(newSwapObj, cb, erCb) {
+      $http({
+        method: "POST",
+        url:"/swap.json",
+        data: {swap: JSON.stringify(newSwapObj)}
+      }).success(cb)
+      .error(erCb);
     },
-    emit: function (eventName, data, callback) {
-      socket.emit(eventName, data, function () {
-        var args = arguments;
-        $rootScope.$apply(function () {
-          if (callback) {
-            callback.apply(socket, args);
-          }
-        });
-      })
+    poll: function(swapID, cb, erCb){
+      $http({method: "POST", url: "/poll.json?swap_id=" + swapID})
+      .success(cb)
+      .error(erCb);
     }
-  };
+  }
 });
 
 app.directive('activeTab', function ($location) {
@@ -101,11 +126,11 @@ app.directive('verifyImg', function () {
   }
 });
 
-app.controller('HomeController', function($scope, $http, $timeout, socket){
-  socket.on('init', function (data) {
-    console.log(data.name);
-    console.log(data.users);
-  });
+app.controller('HomeController', function($scope, $timeout, swapHTTP){
+  // socket.on('init', function (data) {
+  //   console.log(data.name);
+  //   console.log(data.users);
+  // });
   var pollingTimer = null;
   $scope.restart = function(newSwapUrl){
     // Hack used to make angular update the 
@@ -135,11 +160,7 @@ app.controller('HomeController', function($scope, $http, $timeout, socket){
     }
     $scope.swapStatus = 1;
 
-    $http({
-      method: "POST",
-      url:"/swap.json",
-      data: {swap: JSON.stringify($scope.newSwapObject)}
-    }).success(function(r, status, headers, config) {
+    swapHTTP.swap($scope.newSwapObject, function(r, status, headers, config) {
       if(r.pollStatus == null || isNaN(r.pollStatus)){
         alert("New Swap Server response body without poll status!");
         $scope.restart();
@@ -150,7 +171,7 @@ app.controller('HomeController', function($scope, $http, $timeout, socket){
           $scope.incomingSwapObject = r.links.select(function(wl){return wl.original})[0];
         }else{
           pollingTimer = setInterval(function(){
-            $http({method: "POST", url: "/poll.json?swap_id=" + r.swapID}).success(function(rPoll, status, headers, config){
+            swapHTTP.poll(r.swapID, function(rPoll, status, headers, config){
               if(rPoll.pollStatus == null || isNaN(rPoll.pollStatus)){
                 alert("Poll Server response body without poll status!");
                 clearInterval(pollingTimer);
@@ -162,15 +183,16 @@ app.controller('HomeController', function($scope, $http, $timeout, socket){
                   clearInterval(pollingTimer);
                 }
               }
-            }).error(function(){
+            }, function(){
               console.log("Poll Unreachable/Error response!");
               $scope.restart();
             });
           }, 5000);
         }
       }
-    }).error(function(){
-      alert("New Swap Unreachable/Error response!");
+    }, function(){
+      console.log("New Swap Unreachable/Error response!");
+      $scope.restart();
     });
   }
 });
