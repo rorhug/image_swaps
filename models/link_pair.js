@@ -1,48 +1,49 @@
-var Validator = require('validator').Validator;
-var sanitize = require('validator').sanitize;
-Validator.prototype.error = function (msg) {
-  this._errors.push(msg);
-  return this;
-}
+'use strict';
 
-Validator.prototype.getErrors = function () {
-  return;
-}
-
+var mongoose = require('mongoose');
+var _ = require('underscore');
 var crypto = require('crypto');
+var u = require('../utils')
 
 var linkPairSchema = mongoose.Schema({
   createdAt: Date,
   swapID: String,
-  webLinks: [{userDescription: String, webURL: String, ipAddress: String, original: Boolean}]
+  webLinks: [{
+              userDescription: String,
+              webURL: String,
+              ipAddress: String,
+              original: Boolean,
+              createdAt: Date
+            }]
 });
 
 linkPairSchema.statics = {
+	findSingle: function(cb){
+		this.findOne({webLinks: {$size: 1}}, cb);
+	}
 };
 
 linkPairSchema.methods = {
-	findSingle: function(cb){
-		this.findOne({webLinks: {$size: 1}}, cb);
-	},
-
-	joinPair: function(webLinks, cb){
+	joinPair: function(cb){
 	  var timestamp = new Date;
 	  var newSwap = this;
+		newSwap.webLinks[0].createdAt = timestamp;
 
-		this.findSingle(function(err, obj){
+		this.constructor.findSingle(function(err, obj){
 			if(err) return handleError(err);
 			if(obj){
-				this.webLinks[0].original = true;
-				this.webLinks[0].
-				obj.webLinks.push(this.webLinks[0]);
+				newSwap.webLinks[0].original = false;
+				obj.webLinks.push(newSwap.webLinks[0]);
         obj.save(cb);
 			}else{
-				
+				newSwap.createdAt = timestamp;
+				newSwap.webLinks[0].original = true;
+				newSwap.setSwapID().save(cb);
 			}
 		});
 	},
 
-	resString: function()
+	resObj: function()
 	{
 	  var links = _.map(this.webLinks, function(liO){
 	  	return {
@@ -51,17 +52,17 @@ linkPairSchema.methods = {
         original: liO.original
       }
     });
-	  return JSON.stringify({
+	  return {
 	    swapID: this.swapID,
 	    pollStatus: this.pollStatus,
 	    links: links
-	  });
+	  };
 	},
 
 	setSwapID: function()
 	{
 	  var shasum = crypto.createHash('sha1');
-	  shasum.update(this._id + salt);
+	  shasum.update(this._id + u.salt);
 	  this.swapID = shasum.digest('hex');
 	  return this;
 	}

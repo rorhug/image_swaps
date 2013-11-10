@@ -2,14 +2,17 @@
 
 console.log("ImageSwaps server... STARTED");
 
+// Modules
 var express = require('express'),
     app = express();
 
-app.use(express.bodyParser());
-app.use(express.logger());
+var fs = require("fs");
 
-var salt = process.env.SWAP_ID_SALT || "omgg2gktnxbai";
-console.log("Salt is: " + salt);
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+app.use(app.router);
 
 var toobusy = require('toobusy');
 app.use(function(req, res, next) {
@@ -20,6 +23,7 @@ app.use(function(req, res, next) {
   }
 });
 
+// Various functions and variables
 process.on('SIGINT', function() {
   server.close();
   // calling .shutdown allows the process to exit normally
@@ -27,7 +31,10 @@ process.on('SIGINT', function() {
   process.exit();
 });
 
+
 // Setup Mongo
+var mongoose = require('mongoose');
+
 mongoose.connect(process.env.MONGOHQ_URL || 'mongodb://localhost/image_swaps');
 var db = mongoose.connection;
 db.on('error', function(){
@@ -39,19 +46,21 @@ db.once('open', function callback () {
 });
 
 // Bootstrap models
-var models_path = __dirname + '/app/models';
+var models_path = __dirname + '/models';
 fs.readdirSync(models_path).forEach(function (file) {
   if (~file.indexOf('.js')) require(models_path + '/' + file);
 });
 
 var swaps = require('./controllers/swaps');
 
-app.get('/', home.index);
-app.get('/changes.json', home.changes);
-app.get('/swap.json', swaps.newSwap);
+// app.get('/', home.index);
+// app.get('/changes.json', home.changes);
+app.post('/swap.json', swaps.newSwap);
 app.post('/poll.json', swaps.pollSwap);
 
-app.use(app.router);
+//Static files
+app.use('/', express.static(__dirname + '/public'));
+
 app.use(function(req, res, next){
   res.status(404);
   res.sendfile("public/templates/not_found.html");
