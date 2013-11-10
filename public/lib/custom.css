@@ -169,3 +169,74 @@ ng-view
   vertical-align: top;
   text-rendering: auto;
 }
+.chat-column
+{
+}
+.chat
+{
+  padding: 4px;
+  margin: 3px;
+  background-color: #e9f3fb;
+  border-radius: 3px;
+  border: 1px solid #c7bbbb;
+}
+.chat .header
+{
+  margin: 0;
+  text-align: center;
+}
+.chat .chat-fields
+{
+  height: 30px;
+  padding-bottom: 0px;
+}
+.chat .message-box
+{
+  height: 100%;
+  width: 66%;
+}
+.chat .send-button
+{
+  width: 30%;
+  height: 100%;
+  padding:0;
+  text-align: center;
+}
+.chat .messages
+{
+  height: 220px;
+  background-color: #fcfcff;
+  border: 1px solid #ddddff;
+  border-radius: 2px;
+  overflow-y: scroll;
+}
+.chat .messages ul
+{
+  margin: 0;
+  padding: 0px;
+}
+.chat .messages li
+{
+  font-size: 13px;
+  list-style: none;
+  color: #000528;
+  padding: 2px;
+}
+.chat .messages .me
+{
+  text-align: right;
+}
+.chat .messages .them
+{
+  text-align: left;
+  background-color: #f0f0f0;
+}
+
+
+
+
+
+
+
+
+

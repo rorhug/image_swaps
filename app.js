@@ -34,11 +34,9 @@ process.on('SIGINT', function() {
 });
 
 // Socket chat
-var chat = require('./controllers/chat.js');
 io.enable('browser client minification');  // send minified client
 io.enable('browser client etag');          // apply etag caching logic based on version number
 io.enable('browser client gzip');          // gzip the file
-io.sockets.on('connection', chat);
 io.set('log level', 2);
 
 // Setup Mongo
@@ -60,7 +58,10 @@ fs.readdirSync(models_path).forEach(function (file) {
   if (~file.indexOf('.js')) require(models_path + '/' + file);
 });
 
+// Controllers
 var swaps = require('./controllers/swaps');
+var chat = require('./controllers/chat');
+io.sockets.on('connection', chat.chatCtrl);
 
 // app.get('/', home.index);
 // app.get('/changes.json', home.changes);

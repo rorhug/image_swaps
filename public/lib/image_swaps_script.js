@@ -1,3 +1,5 @@
+'use strict';
+
 Array.prototype.select = function(closure){
   var filtered = [];
   for(var n = 0; n < this.length; n++) {
@@ -39,32 +41,31 @@ app.run(['$location', '$rootScope', function($location, $rootScope) {
   });
 }]);
 
-// app.service('socket', function ($rootScope) {
-//   var socket = io.connect();
-//   return {
-//     joinRoom: function(roomName, callback){
-
-//     },
-//     on: function (eventName, callback) {
-//       socket.on(eventName, function () {  
-//         var args = arguments;
-//         $rootScope.$apply(function () {
-//           callback.apply(socket, args);
-//         });
-//       });
-//     },
-//     emit: function (eventName, data, callback) {
-//       socket.emit(eventName, data, function () {
-//         var args = arguments;
-//         $rootScope.$apply(function () {
-//           if (callback) {
-//             callback.apply(socket, args);
-//           }
-//         });
-//       })
-//     }
-//   };
-// });
+app.service('socketService', function ($rootScope) {
+  return function() {
+    this.socket = io.connect();
+    this.on = function (eventName, callback) {
+      var t = this;
+      t.socket.on(eventName, function () {  
+        var args = arguments;
+        $rootScope.$apply(function () {
+          callback.apply(t.socket, args);
+        });
+      });
+    },
+    this.emit = function (eventName, data, callback) {
+      var t = this;
+      t.socket.emit(eventName, data, function () {
+        var args = arguments;
+        $rootScope.$apply(function () {
+          if (callback) {
+            callback.apply(t.socket, args);
+          }
+        });
+      })
+    }
+  };
+});
 
 app.factory('swapHTTP', function($http) {
 
@@ -93,7 +94,7 @@ app.directive('activeTab', function ($location) {
     link: function (scope, element, attrs) {
       scope.$on("$routeChangeSuccess", function (event, current, previous) {
         var pathLevel = attrs.tabLevel || 1,
-            className = attrs.activeTab;
+            className = attrs.activeTab,
             pathToCheck = $location.path().split("#").pop().split('/')[pathLevel],
             tabLink = element.find("a").attr("href").split("#").pop().split('/')[pathLevel];
         if (pathToCheck === tabLink){
@@ -135,11 +136,15 @@ app.controller('HomeController', function($scope, $timeout, swapHTTP){
   $scope.restart = function(newSwapUrl){
     // Hack used to make angular update the 
     $scope.newSwapObject = {url: newSwapUrl || "http://"};
-    $scope.swapStatus = false;
+    // 1: looking for new swap, 2: Found swap, 3: chatting
+    $scope.swapStatus = 3;
     $scope.userImage = "";
-    $scope.incomingSwapObject = {};
+    $scope.incomingSwapObject = {desc: "asdf", url: "http://i.imgur.com/rMyZYzx.jpg", original: true};
     $scope.validImgLink = {url: newSwapUrl, valid: newSwapUrl || null};
     clearInterval(pollingTimer);
+
+    // [ {user: 0, content: "lol"} ]
+    $scope.chatMessages = [{user: 1, content: "lol"},{user: 0, content: "lol"}];
   }
   $scope.restart();
 
@@ -169,6 +174,8 @@ app.controller('HomeController', function($scope, $timeout, swapHTTP){
         if(r.pollStatus == 2){
           $scope.swapStatus = 2;
           $scope.incomingSwapObject = r.links.select(function(wl){return wl.original})[0];
+          $scope.swapStatus = 3;
+          console.log($scope.incomingSwapObject);
         }else{
           pollingTimer = setInterval(function(){
             swapHTTP.poll(r.swapID, function(rPoll, status, headers, config){
@@ -194,6 +201,13 @@ app.controller('HomeController', function($scope, $timeout, swapHTTP){
       console.log("New Swap Unreachable/Error response!");
       $scope.restart();
     });
+  }
+});
+
+app.controller('ChatController', function($scope, socketService){
+  $scope.myUser = Number(!$scope.incomingSwapObject.original);
+  $scope.startChat = function(){
+    var socket = new socketService();
   }
 });
 

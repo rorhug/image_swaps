@@ -1,11 +1,12 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var _ = require('underscore');
-var crypto = require('crypto');
-var u = require('../utils')
+var mongoose = require('mongoose'),
+  Schema = mongoose.Schema,
+	_ = require('underscore'),
+	crypto = require('crypto'),
+	u = require('../utils');
 
-var linkPairSchema = mongoose.Schema({
+var linkPairSchema = new Schema({
   createdAt: Date,
   swapID: String,
   webLinks: [{
@@ -20,6 +21,9 @@ var linkPairSchema = mongoose.Schema({
 linkPairSchema.statics = {
 	findSingle: function(cb){
 		this.findOne({webLinks: {$size: 1}}, cb);
+	},
+	chatMessage: function(msgObj, cb){
+		return;
 	}
 };
 
