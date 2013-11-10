@@ -4,11 +4,13 @@ console.log("ImageSwaps server... STARTED");
 
 // Modules
 var express = require('express'),
-    app = express();
+    http = require('http'),
+    app = express(),
+    server = http.createServer(app),
+    io = require('socket.io').listen(server);
 
 var fs = require("fs");
 
-app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
@@ -31,6 +33,14 @@ process.on('SIGINT', function() {
   process.exit();
 });
 
+// Socket chat
+
+var chat = require('./controllers/chat.js');
+io.enable('browser client minification');  // send minified client
+io.enable('browser client etag');          // apply etag caching logic based on version number
+io.enable('browser client gzip');          // gzip the file
+io.sockets.on('connection', chat);
+io.set('log level', 2);
 
 // Setup Mongo
 var mongoose = require('mongoose');
@@ -67,7 +77,4 @@ app.use(function(req, res, next){
 });
 
 var port = process.env.PORT || 3000;
-app.listen(port);
-
-// expose app
-exports = module.exports = app;
+server.listen(port);

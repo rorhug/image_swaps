@@ -39,6 +39,30 @@ app.run(['$location', '$rootScope', function($location, $rootScope) {
   });
 }]);
 
+app.factory('socket', function ($rootScope) {
+  var socket = io.connect();
+  return {
+    on: function (eventName, callback) {
+      socket.on(eventName, function () {  
+        var args = arguments;
+        $rootScope.$apply(function () {
+          callback.apply(socket, args);
+        });
+      });
+    },
+    emit: function (eventName, data, callback) {
+      socket.emit(eventName, data, function () {
+        var args = arguments;
+        $rootScope.$apply(function () {
+          if (callback) {
+            callback.apply(socket, args);
+          }
+        });
+      })
+    }
+  };
+});
+
 app.directive('activeTab', function ($location) {
   return {
     link: function (scope, element, attrs) {
@@ -77,7 +101,11 @@ app.directive('verifyImg', function () {
   }
 });
 
-app.controller('HomeController', function($scope, $http, $timeout){
+app.controller('HomeController', function($scope, $http, $timeout, socket){
+  socket.on('init', function (data) {
+    console.log(data.name);
+    console.log(data.users);
+  });
   var pollingTimer = null;
   $scope.restart = function(newSwapUrl){
     // Hack used to make angular update the 
