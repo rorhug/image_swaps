@@ -15,8 +15,7 @@
 		</div>
 		<div class="pure-control-group">
 	    <label for="desc">Description or message</label>
-	    <input tabindex="2" id="desc" type="text" class="pure-input-2-3" maxlength="250" placeholder="Funny cat GIF..." ng-model="newSwapObject.desc" ng-maxlength="250" ng-minlength="1" ng-required="true">
-	    </textarea>
+	    <input tabindex="2" id="desc" type="text" class="pure-input-2-3" maxlength="250" placeholder="Funny cat GIF..." ng-model="newSwapObject.desc" ng-maxlength="250" ng-minlength="1" ng-required="true" />
 		</div>
   </fieldset>
   <button tabindex="3" type="submit" class="pure-button pure-input-1 pure-button-xlarge {{validSwap() ? 'pure-button-success' : ''}}" analytics-on analytics-event="swap_attempt">{{validSwap() ? 'Swap your image!' : 'Enter info &#8593; and click here!'}}</button>
@@ -55,14 +54,12 @@
 			<h3 class="header">Chat</h3>
 	  	<div class="messages">
 	  		<ul>
-	  			<li ng-repeat="msg in chatMessages" class="{{msg.user == myUser ? 'me' : 'them'}}">
-	  				Hey
-	  			</li>
+	  			<li ng-repeat="msg in chatMessages track by $index" class="{{cssUser(msg.user)}}" ng-bind="msg.content"></li>
 	  		</ul>
 			</div>
-	  	<form class="pure-form">
+	  	<form class="pure-form" ng-submit="sendMessage()" chatForm>
 		    <fieldset class="chat-fields">
-	        <input type="email" placeholder="Say something!" class="message-box">
+	        <input type="text" placeholder="Say something!" class="message-box" ng-model="message.content" ng-disabled="chatFormOff">
 	        <button type="submit" class="pure-button pure-button-secondary send-button">send</button>
 		    </fieldset>
 			</form>

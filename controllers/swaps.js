@@ -43,7 +43,6 @@ exports.newSwap = function(req, res){
   v.check(postObj.url).isUrl();
 
   if (v._errors.length > 0) {
-  	console.log(ers(v._errors));
     return res.json(400, ers(v._errors));
   }
 
@@ -56,9 +55,7 @@ exports.newSwap = function(req, res){
   });
 
   swapObj.joinPair(function(err, obj){
-
   	if (err) {
-		  console.log("er");
       res.json(500, er(["Error saving"]));
       return handleError(err);
     }

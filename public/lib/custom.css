@@ -231,6 +231,14 @@ ng-view
   text-align: left;
   background-color: #f0f0f0;
 }
+.chat .messages .op
+{
+  text-align: center;
+  color: #4f4f4f;
+  padding: 3px 0;
+  font-size: 11px;
+}
+
 
 
 
