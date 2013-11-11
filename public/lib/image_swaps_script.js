@@ -44,7 +44,7 @@ app.run(['$location', '$rootScope', function($location, $rootScope) {
 app.service('socketService', function ($rootScope) {
   return function() {
     this.socket = io.connect();
-    this.on = function (eventName, callback) {
+    this.on = function(eventName, callback) {
       var t = this;
       t.socket.on(eventName, function () {  
         var args = arguments;
@@ -53,7 +53,7 @@ app.service('socketService', function ($rootScope) {
         });
       });
     },
-    this.emit = function (eventName, data, callback) {
+    this.emit = function(eventName, data, callback) {
       var t = this;
       t.socket.emit(eventName, data, function () {
         var args = arguments;
@@ -63,6 +63,13 @@ app.service('socketService', function ($rootScope) {
           }
         });
       })
+    },
+    this.disconnect = function() {
+      this.socket.disconnect();
+    },
+    this.reconnect = function() {
+      this.socket.socket.connect();
+      return this;
     }
   };
 });
@@ -108,6 +115,22 @@ app.directive('activeTab', function ($location) {
   };
 });
 
+app.directive('chatForm', function ($location) {
+  return {
+    link: function (scope, element, attrs) {
+      console("linked");
+      scope.$watch("chatFormOff", function(newValue, oldValue){
+        console("w");
+        if(newValue < oldValue) {
+          console("on");
+          element.find("input").val("");
+          element.find("input").focus();
+        }
+      });
+    }
+  };
+});
+
 app.directive('verifyImg', function () {
   return {
     restrict: "A",
@@ -128,23 +151,20 @@ app.directive('verifyImg', function () {
 });
 
 app.controller('HomeController', function($scope, $timeout, swapHTTP){
-  // socket.on('init', function (data) {
-  //   console.log(data.name);
-  //   console.log(data.users);
-  // });
   var pollingTimer = null;
   $scope.restart = function(newSwapUrl){
     // Hack used to make angular update the 
     $scope.newSwapObject = {url: newSwapUrl || "http://"};
     // 1: looking for new swap, 2: Found swap, 3: chatting
-    $scope.swapStatus = 3;
+    $scope.swapStatus = false;
     $scope.userImage = "";
-    $scope.incomingSwapObject = {desc: "asdf", url: "http://i.imgur.com/rMyZYzx.jpg", original: true};
+    $scope.incomingSwapObject = {};
     $scope.validImgLink = {url: newSwapUrl, valid: newSwapUrl || null};
+    $scope.swapID = "";
     clearInterval(pollingTimer);
 
     // [ {user: 0, content: "lol"} ]
-    $scope.chatMessages = [{user: 1, content: "lol"},{user: 0, content: "lol"}];
+    $scope.chatMessages = [];
   }
   $scope.restart();
 
@@ -171,11 +191,11 @@ app.controller('HomeController', function($scope, $timeout, swapHTTP){
         $scope.restart();
       }
       else{
+        $scope.swapID = r.swapID;
         if(r.pollStatus == 2){
           $scope.swapStatus = 2;
           $scope.incomingSwapObject = r.links.select(function(wl){return wl.original})[0];
           $scope.swapStatus = 3;
-          console.log($scope.incomingSwapObject);
         }else{
           pollingTimer = setInterval(function(){
             swapHTTP.poll(r.swapID, function(rPoll, status, headers, config){
@@ -188,6 +208,7 @@ app.controller('HomeController', function($scope, $timeout, swapHTTP){
                   $scope.swapStatus = 2;
                   $scope.incomingSwapObject = rPoll.links.select(function(wl){return !wl.original})[0];
                   clearInterval(pollingTimer);
+                  $scope.swapStatus = 3;
                 }
               }
             }, function(){
@@ -205,9 +226,49 @@ app.controller('HomeController', function($scope, $timeout, swapHTTP){
 });
 
 app.controller('ChatController', function($scope, socketService){
-  $scope.myUser = Number(!$scope.incomingSwapObject.original);
-  $scope.startChat = function(){
-    var socket = new socketService();
+  var socket; // Initialize socket var
+  $scope.cssUser = function(u){
+    if(u == $scope.myUser){return "me"}
+    else if(u == 2){return "op"}
+    else{return "them"}
+  }
+  // chatmessage: client -> server
+  // shatmessage: server -> client :)
+  $scope.startChat = function() {
+    $scope.chatMessages = [];
+    $scope.chatFormOff = false;
+    $scope.myUser = Number(!$scope.incomingSwapObject.original);
+    if(socket)
+    {
+      socket.reconnect();
+    } else {
+      socket = new socketService();
+      socket.on("subNow", function(msg){
+        socket.emit("subscribe", {room: $scope.swapID});
+      });
+      socket.on("shatmessage", function(msgObj){
+        $scope.chatMessages.push(msgObj);
+        if(msgObj.user == $scope.myUser){$scope.chatFormOff = false};
+        if(msgObj.action == "other_left"){$scope.endChat()};
+      });
+    }
+  }
+  $scope.endChat = function(){
+    socket.disconnect();
+    $scope.chatFormOff = true;
+  }
+  $scope.$watch('swapStatus', function(newValue, oldValue) {
+    if(newValue == 3) {
+      $scope.startChat();
+    }else{
+      if(socket){$scope.endChat()};
+    };
+  });
+  $scope.sendMessage = function(m) {
+    if($scope.swapStatus != 3) return;
+    // chatObj {content: string, original: bool}
+    socket.emit("chatmessage", {content: $scope.message.content, user: $scope.myUser});
+    $scope.chatFormOff = true;
   }
 });
 
