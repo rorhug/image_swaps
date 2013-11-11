@@ -15,15 +15,17 @@ var linkPairSchema = new Schema({
               ipAddress: String,
               original: Boolean,
               createdAt: Date
-            }]
+            }],
+  chat: [{
+  	content: String,
+  	createdAt: Date,
+  	original: Boolean
+  }]
 });
 
 linkPairSchema.statics = {
 	findSingle: function(cb){
 		this.findOne({webLinks: {$size: 1}}, cb);
-	},
-	chatMessage: function(msgObj, cb){
-		return;
 	}
 };
 
@@ -47,8 +49,7 @@ linkPairSchema.methods = {
 		});
 	},
 
-	resObj: function()
-	{
+	resObj: function(){
 	  var links = _.map(this.webLinks, function(liO){
 	  	return {
 	  		desc:     liO.userDescription,
@@ -63,12 +64,18 @@ linkPairSchema.methods = {
 	  };
 	},
 
-	setSwapID: function()
-	{
+	setSwapID: function(){
 	  var shasum = crypto.createHash('sha1');
 	  shasum.update(this._id + u.salt);
 	  this.swapID = shasum.digest('hex');
 	  return this;
+	},
+
+	// chatObj {content: string, original: bool}
+	chatMessage: function(chatObj, cb){
+	  chatObj.createdAt = new Date;
+		this.chat.push(chatObj);
+		this.save(cb);
 	}
 }
 
