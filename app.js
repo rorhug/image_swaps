@@ -7,7 +7,8 @@ var express = require('express'),
     http = require('http'),
     app = express(),
     server = http.createServer(app),
-    io = require('socket.io').listen(server);
+    io = require('socket.io').listen(server),
+    _ = require("underscore");
 
 var fs = require("fs");
 
@@ -15,23 +16,6 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
-
-var toobusy = require('toobusy');
-app.use(function(req, res, next) {
-  if (toobusy()) {
-    res.send(503, "I'm busy right now, sorry.");
-  } else {
-    next();
-  }
-});
-
-// Various functions and variables
-process.on('SIGINT', function() {
-  server.close();
-  // calling .shutdown allows the process to exit normally
-  toobusy.shutdown();
-  process.exit();
-});
 
 // Socket chat
 io.enable('browser client minification');  // send minified client
@@ -59,12 +43,14 @@ fs.readdirSync(models_path).forEach(function (file) {
 });
 
 // Controllers
+var home = require('./controllers/home');
 var swaps = require('./controllers/swaps');
 var chat = require('./controllers/chat');
+chat.setIO(io);
 io.sockets.on('connection', chat.chatCtrl);
 
-// app.get('/', home.index);
-// app.get('/changes.json', home.changes);
+app.get('/', home.index);
+app.get('/changes.json', home.changes);
 app.post('/swap.json', swaps.newSwap);
 app.post('/poll.json', swaps.pollSwap);
 
