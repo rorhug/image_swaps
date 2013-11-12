@@ -55,7 +55,7 @@ exports.chatCtrl = function(socket) {
               socket.emit('shatmessage', {user: 2, content: "The other person left. :(", action: "other_left"});
               socket.disconnect();
             }
-          }, 10000);
+          }, 7500);
         } else if(numberOfClients == 2) {
           io.sockets.in(roomName).emit('shatmessage', {user: 2, content: "Start chatting...", action: "other_connect"});
         } else {
