@@ -41,15 +41,17 @@ app.run(['$location', '$rootScope', function($location, $rootScope) {
   });
 }]);
 
-app.service('socketService', function ($rootScope) {
+app.service('socketService', function ($rootScope, $timeout) {
   return function() {
     this.socket = io.connect();
     this.on = function(eventName, callback) {
       var t = this;
       t.socket.on(eventName, function () {  
         var args = arguments;
-        $rootScope.$apply(function () {
-          callback.apply(t.socket, args);
+        $timeout(function(){
+          $rootScope.$apply(function () {
+            callback.apply(t.socket, args);
+          });
         });
       });
     },
@@ -57,10 +59,12 @@ app.service('socketService', function ($rootScope) {
       var t = this;
       t.socket.emit(eventName, data, function () {
         var args = arguments;
-        $rootScope.$apply(function () {
-          if (callback) {
-            callback.apply(t.socket, args);
-          }
+        $timeout(function(){
+          $rootScope.$apply(function () {
+            if (callback) {
+              callback.apply(t.socket, args);
+            }
+          });
         });
       })
     },
@@ -68,6 +72,7 @@ app.service('socketService', function ($rootScope) {
       this.socket.disconnect();
     },
     this.reconnect = function() {
+      this.socket.removeAllListeners();
       this.socket.socket.connect();
       return this;
     }
@@ -115,16 +120,16 @@ app.directive('activeTab', function ($location) {
   };
 });
 
-app.directive('chatForm', function ($location) {
+app.directive('chatFormFocus', function($timeout) {
   return {
-    link: function (scope, element, attrs) {
-      console("linked");
-      scope.$watch("chatFormOff", function(newValue, oldValue){
-        console("w");
-        if(newValue < oldValue) {
-          console("on");
-          element.find("input").val("");
-          element.find("input").focus();
+    link: function(scope, element) {
+      scope.$watch("chatFormOff", function(value) {
+        if(value === true){
+          scope.formDisabled = true;
+          $timeout(function() {
+            scope.formDisabled = false;
+            element[0].focus();
+          }, 1000);
         }
       });
     }
@@ -150,7 +155,7 @@ app.directive('verifyImg', function () {
   }
 });
 
-app.controller('HomeController', function($scope, $timeout, swapHTTP){
+app.controller('HomeController', function($scope, $interval, swapHTTP){
   var pollingTimer = null;
   $scope.restart = function(newSwapUrl){
     // Hack used to make angular update the 
@@ -161,7 +166,7 @@ app.controller('HomeController', function($scope, $timeout, swapHTTP){
     $scope.incomingSwapObject = {};
     $scope.validImgLink = {url: newSwapUrl, valid: newSwapUrl || null};
     $scope.swapID = "";
-    clearInterval(pollingTimer);
+    $interval.cancel(pollingTimer);
 
     // [ {user: 0, content: "lol"} ]
     $scope.chatMessages = [];
@@ -197,17 +202,17 @@ app.controller('HomeController', function($scope, $timeout, swapHTTP){
           $scope.incomingSwapObject = r.links.select(function(wl){return wl.original})[0];
           $scope.swapStatus = 3;
         }else{
-          pollingTimer = setInterval(function(){
+          pollingTimer = $interval(function(){
             swapHTTP.poll(r.swapID, function(rPoll, status, headers, config){
               if(rPoll.pollStatus == null || isNaN(rPoll.pollStatus)){
                 alert("Poll Server response body without poll status!");
-                clearInterval(pollingTimer);
+                $interval.cancel(pollingTimer);
                 $scope.restart();
               }else{
                 if(rPoll.pollStatus == 2){
                   $scope.swapStatus = 2;
                   $scope.incomingSwapObject = rPoll.links.select(function(wl){return !wl.original})[0];
-                  clearInterval(pollingTimer);
+                  $interval.cancel(pollingTimer);
                   $scope.swapStatus = 3;
                 }
               }
@@ -225,7 +230,7 @@ app.controller('HomeController', function($scope, $timeout, swapHTTP){
   }
 });
 
-app.controller('ChatController', function($scope, socketService){
+app.controller('ChatController', function($scope, $timeout, socketService){
   var socket; // Initialize socket var
   $scope.cssUser = function(u){
     if(u == $scope.myUser){return "me"}
@@ -236,7 +241,9 @@ app.controller('ChatController', function($scope, socketService){
   // shatmessage: server -> client :)
   $scope.startChat = function() {
     $scope.chatMessages = [];
-    $scope.chatFormOff = false;
+    $scope.message = {}; // Chat form model
+    $scope.chatFormOff = true;  // Main control
+    $scope.formDisabled = true; // Delayed version
     $scope.myUser = Number(!$scope.incomingSwapObject.original);
     if(socket)
     {
@@ -248,14 +255,19 @@ app.controller('ChatController', function($scope, socketService){
       });
       socket.on("shatmessage", function(msgObj){
         $scope.chatMessages.push(msgObj);
+        // re-enable form
         if(msgObj.user == $scope.myUser){$scope.chatFormOff = false};
+        if(msgObj.action == "other_connect"){$scope.chatFormOff = false};
         if(msgObj.action == "other_left"){$scope.endChat()};
+      });
+      socket.on("disconnect", function(){
+        $scope.chatMessages.push({user: 2, content: "(disconnected)"});
+        $scope.chatFormOff = true;
       });
     }
   }
   $scope.endChat = function(){
     socket.disconnect();
-    $scope.chatFormOff = true;
   }
   $scope.$watch('swapStatus', function(newValue, oldValue) {
     if(newValue == 3) {
@@ -265,10 +277,11 @@ app.controller('ChatController', function($scope, socketService){
     };
   });
   $scope.sendMessage = function(m) {
-    if($scope.swapStatus != 3) return;
-    // chatObj {content: string, original: bool}
+    if($scope.swapStatus != 3 || $scope.chatForm.$inalid) return;
+    // chatObj {content: string, user: int}
     socket.emit("chatmessage", {content: $scope.message.content, user: $scope.myUser});
     $scope.chatFormOff = true;
+    $scope.message.content = "";
   }
 });
 
