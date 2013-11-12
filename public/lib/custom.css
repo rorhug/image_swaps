@@ -98,6 +98,10 @@ ins.adsbygoogle
   margin-top: 10px;
   display: block !important;
 }
+.swap-container > div
+{
+  transition: width 0.5s;
+}
 .small, .small-faded
 {
   font-size: 14px;
@@ -238,13 +242,6 @@ ng-view
   padding: 3px 0;
   font-size: 11px;
 }
-
-
-
-
-
-
-
 
 
 
