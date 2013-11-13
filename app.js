@@ -33,7 +33,7 @@ db.on('error', function(){
   process.kill();
 });
 db.once('open', function callback () {
-  console.log("Database connected :P")
+  console.log("Database connected :P");
 });
 
 // Bootstrap models

@@ -1,5 +1,5 @@
 <h3>Swap an image with a random person!</h3>
-<button ng-show="swapStatus > 0" class="pure-button pure-input-1 {{swapStatus > 1 ? 'pure-button-primary' : 'pure-button-error pure-button-small'}}" ng-click="restart()" analytics-on analytics-event="restart_swap">Leave - New Swap</button>
+<button ng-show="swapStatus > 0" class="pure-button pure-input-1 {{swapStatus > 1 ? 'pure-button-primary' : 'pure-button-error pure-button-small'}}" ng-click="restart()" analytics-on="click" analytics-event="restart_swap">Leave - New Swap</button>
 <form novalidate name="newSwapForm" class="pure-form pure-form-aligned new-swap-form" ng-submit="newSwap()" ng-hide="swapStatus">
   <fieldset>
 		<div class="pure-control-group">
@@ -16,7 +16,7 @@
 	    <input tabindex="2" id="desc" type="text" class="pure-input-2-3" maxlength="250" placeholder="Funny cat GIF..." ng-model="newSwapObject.desc" ng-maxlength="250" ng-minlength="1" ng-required="true" />
 		</div>
   </fieldset>
-  <button tabindex="3" type="submit" class="pure-button pure-input-1 pure-button-xlarge {{validSwap() ? 'pure-button-success' : ''}}" analytics-on analytics-event="swap_attempt">{{validSwap() ? 'Swap your image!' : 'Enter info &#8593; and click here!'}}</button>
+  <button tabindex="3" type="submit" class="pure-button pure-input-1 pure-button-xlarge {{validSwap() ? 'pure-button-success' : ''}}" analytics-on="click" analytics-event="swap_attempt">{{validSwap() ? 'Swap your image!' : 'Enter info &#8593; and click here!'}}</button>
 </form>
 
 <div ng-show="swapStatus">
@@ -40,7 +40,7 @@
   	<div ng-show="swapStatus > 1">
 	  	<h4 class="image-title">
 	  		Their image...
-		  	<button class="pure-button pure-button-warning pure-button-small" ng-click="restart(incomingSwapObject.url)">ReSwap this image!</button>
+		  	<button class="pure-button pure-button-warning pure-button-small" ng-click="restart(incomingSwapObject.url)" analytics-on="click" analytics-event="reswap">ReSwap this image!</button>
 		  </h4>
 	  	<div class="image-desc" ng-bind="incomingSwapObject.desc"></div>
 	  	<a href="{{incomingSwapObject.url}}" target="_blank"><img class="image-itself" ng-src="{{incomingSwapObject.url}}" /></a>
