@@ -78,11 +78,15 @@ app.service('socketService', function ($rootScope, $timeout) {
   };
 });
 
+app.service("buzzSound", function(){
+  return function(filename) {
+    return new buzz.sound( filename, {
+      formats: [ "ogg", "mp3" ]
+    });
+  }
+});
+
 app.factory('swapHTTP', function($http) {
-
-  // factory returns an object
-  // you can run some code before
-
   return {
     swap: function(newSwapObj, cb, erCb) {
       $http({
@@ -167,8 +171,9 @@ app.directive('verifyImg', function () {
   }
 });
 
-app.controller('HomeController', function($scope, $interval, swapHTTP){
+app.controller('HomeController', function($scope, $interval, swapHTTP, buzzSound){
   var pollingTimer = null;
+  var swapSound;
   $scope.restart = function(newSwapUrl){
     // Hack used to make angular update the 
     $scope.newSwapObject = {url: newSwapUrl || "http://"};
@@ -197,9 +202,8 @@ app.controller('HomeController', function($scope, $interval, swapHTTP){
   }
 
   $scope.newSwap = function(){
-    if (!$scope.validSwap()){
-      return;
-    }
+    swapSound = swapSound || buzzSound("sounds/swap");
+    if (!$scope.validSwap()){ return; }
     $scope.swapStatus = 1;
 
     swapHTTP.swap($scope.newSwapObject, function(r, status, headers, config) {
@@ -224,6 +228,7 @@ app.controller('HomeController', function($scope, $interval, swapHTTP){
                 if(rPoll.pollStatus == 2){
                   $scope.swapStatus = 2;
                   $scope.incomingSwapObject = rPoll.links.select(function(wl){return !wl.original})[0];
+                  swapSound.play()
                   $interval.cancel(pollingTimer);
                   $scope.swapStatus = 3;
                 }
@@ -242,7 +247,8 @@ app.controller('HomeController', function($scope, $interval, swapHTTP){
   }
 });
 
-app.controller('ChatController', function($scope, $timeout, socketService){
+app.controller('ChatController', function($scope, $timeout, socketService, buzzSound){
+  var chatSound;
   var socket; // Initialize socket var
   $scope.cssUser = function(u){
     if(u == $scope.myUser){return "me"}
@@ -257,6 +263,7 @@ app.controller('ChatController', function($scope, $timeout, socketService){
     $scope.chatFormOff = true;  // Main control
     $scope.formDisabled = true; // Delayed version
     $scope.myUser = Number(!$scope.incomingSwapObject.original);
+    chatSound = chatSound || buzzSound("sounds/chat");
     if(socket)
     {
       socket.reconnect();
@@ -268,9 +275,12 @@ app.controller('ChatController', function($scope, $timeout, socketService){
       socket.on("shatmessage", function(msgObj){
         $scope.chatMessages.push(msgObj);
         // re-enable form
-        if(msgObj.user == $scope.myUser){$scope.chatFormOff = false};
-        if(msgObj.action == "other_connect"){$scope.chatFormOff = false};
-        if(msgObj.action == "other_left"){$scope.endChat()};
+        if(msgObj.user === $scope.myUser || msgObj.action === "other_connect"){
+          console.log("yo")
+          $scope.chatFormOff = false
+        };
+        if((msgObj.user !== $scope.myUser) && (msgObj.user !== 2)) { chatSound.play(); }
+        if(msgObj.action === "other_left"){$scope.endChat()};
       });
       socket.on("disconnect", function(){
         $scope.chatMessages.push({user: 2, content: "(disconnected)"});
