@@ -289,7 +289,7 @@ app.controller('ChatController', function($scope, $timeout, socketService){
     };
   });
   $scope.sendMessage = function(m) {
-    if($scope.swapStatus != 3 || $scope.chatForm.$inalid) return;
+    if($scope.swapStatus != 3 || $scope.chatForm.$invalid) return;
     // chatObj {content: string, user: int}
     socket.emit("chatmessage", {content: $scope.message.content, user: $scope.myUser});
     $scope.chatFormOff = true;
