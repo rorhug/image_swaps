@@ -123,22 +123,6 @@ app.directive('activeTab', function ($location) {
   };
 });
 
-app.directive('chatFormFocus', function($timeout) {
-  return {
-    link: function(scope, element) {
-      scope.$watch("chatFormOff", function(value) {
-        if(value === true){
-          scope.formDisabled = true;
-          $timeout(function() {
-            scope.formDisabled = false;
-            element[0].focus();
-          }, 400);
-        }
-      });
-    }
-  };
-});
-
 app.directive("chatMessagesScroll", function($timeout){
   return {
     link: function(scope, elem, attrs) {
@@ -250,6 +234,7 @@ app.controller('HomeController', function($scope, $interval, swapHTTP, buzzSound
 app.controller('ChatController', function($scope, $timeout, socketService, buzzSound){
   var chatSound;
   var socket; // Initialize socket var
+  var formTimer;
   $scope.cssUser = function(u){
     if(u == $scope.myUser){return "me"}
     else if(u == 2){return "op"}
@@ -260,10 +245,10 @@ app.controller('ChatController', function($scope, $timeout, socketService, buzzS
   $scope.startChat = function() {
     $scope.chatMessages = [];
     $scope.message = {}; // Chat form model
-    $scope.chatFormOff = true;  // Main control
     $scope.formDisabled = true; // Delayed version
     $scope.myUser = Number(!$scope.incomingSwapObject.original);
     chatSound = chatSound || buzzSound("sounds/chat");
+
     if(socket)
     {
       socket.reconnect();
@@ -276,15 +261,18 @@ app.controller('ChatController', function($scope, $timeout, socketService, buzzS
         $scope.chatMessages.push(msgObj);
         // re-enable form
         if(msgObj.user === $scope.myUser || msgObj.action === "other_connect"){
-          console.log("yo")
-          $scope.chatFormOff = false
+
+          $scope.formDisabled = true;
+          $timeout.cancel(formTimer);
+          formTimer = $timeout(function() {
+            $scope.formDisabled = false;
+          }, 400);
         };
         if((msgObj.user !== $scope.myUser) && (msgObj.user !== 2)) { chatSound.play(); }
         if(msgObj.action === "other_left"){$scope.endChat()};
       });
       socket.on("disconnect", function(){
         $scope.chatMessages.push({user: 2, content: "(disconnected)"});
-        $scope.chatFormOff = true;
       });
     }
   }
@@ -302,7 +290,6 @@ app.controller('ChatController', function($scope, $timeout, socketService, buzzS
     if($scope.swapStatus != 3 || $scope.chatForm.$invalid) return;
     // chatObj {content: string, user: int}
     socket.emit("chatmessage", {content: $scope.message.content, user: $scope.myUser});
-    $scope.chatFormOff = true;
     $scope.message.content = "";
   }
 });
