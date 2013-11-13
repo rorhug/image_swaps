@@ -28,6 +28,10 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl: 'templates/help.html',
       title: "Help"
     }).
+    when('/live', {
+      templateUrl: 'templates/live.html',
+      title: "Live"
+    }).
     otherwise({
       templateUrl: 'templates/not_found.html',
       title: "Not Found"
