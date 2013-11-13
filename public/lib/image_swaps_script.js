@@ -72,7 +72,6 @@ app.service('socketService', function ($rootScope, $timeout) {
       this.socket.disconnect();
     },
     this.reconnect = function() {
-      this.socket.removeAllListeners();
       this.socket.socket.connect();
       return this;
     }
@@ -129,11 +128,24 @@ app.directive('chatFormFocus', function($timeout) {
           $timeout(function() {
             scope.formDisabled = false;
             element[0].focus();
-          }, 1000);
+          }, 400);
         }
       });
     }
   };
+});
+
+app.directive("chatMessagesScroll", function($timeout){
+  return {
+    link: function(scope, elem, attrs) {
+      var chatElem = angular.element(elem)[0];
+      scope.$watch("chatMessages.length", function(newVal, oldVal){
+        $timeout(function(){
+          chatElem.scrollTop = chatElem.scrollHeight;
+        }, 100);
+      });
+    }
+  }
 });
 
 app.directive('verifyImg', function () {
