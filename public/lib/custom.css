@@ -194,17 +194,19 @@ ng-view
   height: 30px;
   padding-bottom: 0px;
 }
-.chat .message-box
+.chat input.message-box
 {
   height: 100%;
   width: 66%;
+  display: inline-block !important;
 }
-.chat .send-button
+.chat button.send-button
 {
-  width: 30%;
+  width: 31%;
   height: 100%;
   padding:0;
   text-align: center;
+  margin: 0 !important;
 }
 .chat .messages
 {

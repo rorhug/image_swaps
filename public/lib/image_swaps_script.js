@@ -266,7 +266,7 @@ app.controller('ChatController', function($scope, $timeout, socketService, buzzS
           $timeout.cancel(formTimer);
           formTimer = $timeout(function() {
             $scope.formDisabled = false;
-          }, 400);
+          }, 800);
         };
         if((msgObj.user !== $scope.myUser) && (msgObj.user !== 2)) { chatSound.play(); }
         if(msgObj.action === "other_left"){$scope.endChat()};
