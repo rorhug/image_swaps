@@ -8,6 +8,18 @@
 	],
 	"log": [
 		{
+			"version": "0.2.0",
+			"date": "13/11/13",
+			"changes": [
+				"Chat with person after swapping",
+				"Server backend completely rewritten more efficiently",
+				"Lot’s of user interface updates making it generally easier to use",
+				"Better mobile user experience",
+				"Added swap and chat notification sounds",
+				"Lot’s of other bug fixes"
+			]
+		},
+		{
 			"version": "0.1.1",
 			"date": "8/11/13",
 			"changes": [
