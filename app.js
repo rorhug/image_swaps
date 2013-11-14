@@ -14,8 +14,7 @@ var express = require('express'),
 var defaultConfig = {
   port: 3000,
   mongoURL: 'mongodb://localhost:27017/image_swaps',
-  salt: "omgg2gktnxbai",
-  appRoot: process.cwd()
+  salt: "omgg2gktnxbai"
 }
 try {
   var userConfig = require(__dirname + '/config.json');
@@ -65,7 +64,10 @@ var chat = require('./controllers/chat');
 chat.setIO(io);
 io.sockets.on('connection', chat.chatCtrl);
 
-app.get('/changes.json', home.changes);
+app.get('/changes.json', function(req, res){
+  res.type('application/json');
+  res.sendfile(__dirname + "/changelog.json");
+});
 app.post('/swap.json', swaps.newSwap);
 app.post('/poll.json', swaps.pollSwap);
 
