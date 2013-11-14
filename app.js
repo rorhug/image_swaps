@@ -14,7 +14,8 @@ var express = require('express'),
 var defaultConfig = {
   port: 3000,
   mongoURL: 'mongodb://localhost:27017/image_swaps',
-  salt: "omgg2gktnxbai"
+  salt: "omgg2gktnxbai",
+  appRoot: process.cwd()
 }
 try {
   var userConfig = require(__dirname + '/config.json');

@@ -6,5 +6,5 @@ exports.index = function(req, res){
 
 exports.changes = function(req, res){
 	res.type('application/json');
-  res.sendfile("changelog.json");
+  res.sendfile(appConfig.appRoot + "/changelog.json");
 };
