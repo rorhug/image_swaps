@@ -75,14 +75,14 @@ app.configure('development', function(){
   app.get('/', home.index);
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
   app.use('/', express.static(__dirname + '/public'));
-  app.use(function(req, res, next){
-    res.status(404);
-    res.sendfile("public/templates/not_found.html");
-  });
 });
 app.configure('production', function(){
   // Use web server for production
   app.use(express.errorHandler());
+});
+app.use(function(req, res, next){
+  res.status(404);
+  res.sendfile("public/templates/not_found.html");
 });
 
 server.listen(appConfig.port);
