@@ -27,6 +27,7 @@ global.appConfig = _.defaults(userConfig, defaultConfig);
 
 console.log(appConfig);
 
+app.disable('x-powered-by');
 app.use(express.logger());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
