@@ -1,4 +1,5 @@
 node_modules
+logfile.log
 .DS_Store
 npm-debug.log
 populate.js

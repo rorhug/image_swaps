@@ -8,11 +8,10 @@ var express = require('express'),
     app = express(),
     server = http.createServer(app),
     io = require('socket.io').listen(server),
-    _ = require("underscore");
+    _ = require("underscore"),
+    fs = require('fs');
 
-var fs = require("fs");
-
-app.use(express.logger('dev'));
+app.use(express.logger());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
