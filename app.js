@@ -25,7 +25,6 @@ try {
 }
 global.appConfig = _.defaults(userConfig, defaultConfig);
 
-
 console.log(appConfig);
 
 app.use(express.logger());
@@ -65,17 +64,25 @@ var chat = require('./controllers/chat');
 chat.setIO(io);
 io.sockets.on('connection', chat.chatCtrl);
 
-app.get('/', home.index);
 app.get('/changes.json', home.changes);
 app.post('/swap.json', swaps.newSwap);
 app.post('/poll.json', swaps.pollSwap);
 
 //Static files
-app.use('/', express.static(__dirname + '/public'));
 
-app.use(function(req, res, next){
-  res.status(404);
-  res.sendfile("public/templates/not_found.html");
+app.configure('development', function(){
+  // Serve Statics in development
+  app.get('/', home.index);
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+  app.use('/', express.static(__dirname + '/public'));
+  app.use(function(req, res, next){
+    res.status(404);
+    res.sendfile("public/templates/not_found.html");
+  });
+});
+app.configure('production', function(){
+  // Use web server for production
+  app.use(express.errorHandler());
 });
 
 server.listen(appConfig.port);
