@@ -40,7 +40,6 @@ io.set('log level', 2);
 
 // Setup Mongo
 var mongoose = require('mongoose');
-
 mongoose.connect(appConfig.mongoURL);
 var db = mongoose.connection;
 db.on('error', function(){
