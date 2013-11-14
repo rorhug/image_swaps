@@ -1,0 +1,5 @@
+{
+	"mongo_url": "mongodb://username:password@place.com:27017/my_database",
+	"salt": "saltysalt",
+	"port": 1337
+}

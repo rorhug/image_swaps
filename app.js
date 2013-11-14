@@ -11,6 +11,23 @@ var express = require('express'),
     _ = require("underscore"),
     fs = require('fs');
 
+var defaultConfig = {
+  port: 3000,
+  mongoURL: 'mongodb://localhost:27017/image_swaps',
+  salt: "omgg2gktnxbai"
+}
+try {
+  var userConfig = require(__dirname + '/config.json');
+  console.log('Loading Config');
+} catch(e) {
+  var userConfig = {};
+  console.log('Cannot read/find config.json file, using defaults');
+}
+global.appConfig = _.defaults(userConfig, defaultConfig);
+
+
+console.log(appConfig);
+
 app.use(express.logger());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
@@ -25,11 +42,11 @@ io.set('log level', 2);
 // Setup Mongo
 var mongoose = require('mongoose');
 
-mongoose.connect(process.env.MONGOHQ_URL || 'mongodb://localhost/image_swaps');
+mongoose.connect(appConfig.mongoURL);
 var db = mongoose.connection;
 db.on('error', function(){
   console.log("DATAbaSE ERR0r");
-  process.kill();
+  process.exit();
 });
 db.once('open', function callback () {
   console.log("Database connected :P");
@@ -61,5 +78,5 @@ app.use(function(req, res, next){
   res.sendfile("public/templates/not_found.html");
 });
 
-var port = process.env.PORT || 3000;
-server.listen(port);
+server.listen(appConfig.port);
+console.log("Listening on port " + appConfig.port);

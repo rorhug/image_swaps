@@ -3,8 +3,7 @@
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema,
 	_ = require('underscore'),
-	crypto = require('crypto'),
-	u = require('../utils');
+	crypto = require('crypto');
 
 var linkPairSchema = new Schema({
   createdAt: Date,
@@ -66,7 +65,7 @@ linkPairSchema.methods = {
 
 	setSwapID: function(){
 	  var shasum = crypto.createHash('sha1');
-	  shasum.update(this._id + u.salt);
+	  shasum.update(this._id + appConfig.salt);
 	  this.swapID = shasum.digest('hex');
 	  return this;
 	},
