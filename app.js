@@ -85,7 +85,7 @@ app.configure('production', function(){
 });
 app.use(function(req, res, next){
   res.status(404);
-  res.sendfile("public/templates/not_found.html");
+  res.sendfile(__dirname + "/public/templates/not_found.html");
 });
 
 server.listen(appConfig.port);
