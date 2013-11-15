@@ -1,6 +1,5 @@
 node_modules
-log*
+*.log
 .DS_Store
 npm-debug.log
-populate.js
 config.json
