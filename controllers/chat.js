@@ -49,14 +49,15 @@ exports.chatCtrl = function(socket) {
         var numberOfClients = io.sockets.clients(roomName).length;
         if(numberOfClients == 1) {
           socket.emit('shatmessage', {user: 2, content: "Connected. Waiting for other user...", action: "join_room"});
-          setTimeout(function(){
+          var bothJoinedTimeout = setTimeout(function(){
             numberOfClients = io.sockets.clients(roomName).length;
             if(numberOfClients == 1){
               socket.emit('shatmessage', {user: 2, content: "The other person left. :(", action: "other_left"});
               socket.disconnect();
             }
-          }, 7500);
+          }, 9500);
         } else if(numberOfClients == 2) {
+          clearTimeout(bothJoinedTimeout);
           io.sockets.in(roomName).emit('shatmessage', {user: 2, content: "Start chatting...", action: "other_connect"});
         } else {
           io.sockets.in(roomName).emit('shatmessage', {user: 2, content: "There is a odd number of user's in this room...", action: "other_connect"});
