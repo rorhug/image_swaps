@@ -12,7 +12,7 @@ var express = require('express'),
     fs = require('fs');
 
 var defaultConfig = {
-  port: 3000,
+  port: process.env.PORT || 3000,
   mongoURL: process.env.MONGOHQ_URL || 'mongodb://localhost:27017/image_swaps',
   salt: "omgg2gktnxbai"
 }
